@@ -1088,9 +1088,9 @@ function renderEducation() {
         // 👇 Yahan maine CSS sidha HTML tag ke andar (inline) daal di hai
         html += `
         <div class="entry" style="margin-bottom: 18px;">
-            <div class="entry-header" style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
-                <div class="entry-title" style="font-size: 17px; font-weight: 700; padding-right: 15px;">${institute}</div>
-                <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap;">${formatMonth(passing)}</div>
+            <div class="entry-header" style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: nowrap !important;">
+                <div class="entry-title" style="font-size: 17px; font-weight: 700; padding-right: 15px; width: 70%;">${institute}</div>
+                <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap !important; min-width: 80px; text-align: right;">${formatMonth(passing)}</div>
             </div>
             <div class="entry-subtitle" style="margin-top: 4px; color: #333; font-size: 15.5px;">
                 ${qualification}
@@ -1135,12 +1135,12 @@ function renderExperience() {
         // 👇 Yahan bhi same force styling lagayi hai
         html += `
         <div class="entry" style="margin-bottom: 18px;">
-            <div class="entry-header" style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
-                <div style="padding-right: 15px;">
+            <div class="entry-header" style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: nowrap !important;">
+                <div style="padding-right: 15px; width: 70%;">
                     <div class="entry-title" style="font-size: 17px; font-weight: 700;">${company}</div>
                     <div class="entry-subtitle" style="margin-top: 4px; color: #555;">${job}</div>
                 </div>
-                <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap;">
+                <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap !important; min-width: 100px; text-align: right;">
                     ${formatMonth(start)} - ${present ? "Present" : formatMonth(end)}
                 </div>
             </div>
@@ -1282,7 +1282,7 @@ function renderSkills(){
 }
 
 // ==========================
-// PDF DOWNLOAD (Off-Screen Clone Method - 100% Mobile Proof)
+// PDF DOWNLOAD (On-Screen Hidden Clone Method)
 // ==========================
 const downloadBtn = document.getElementById("downloadBtn");
 if (downloadBtn) {
@@ -1295,46 +1295,45 @@ if (downloadBtn) {
         const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
         const originalResume = document.getElementById("resumePreview");
 
-        // 1. Ek duplicate resume banayenge jo screen par nahi dikhega
         const clonedResume = originalResume.cloneNode(true);
         
-        // 2. Is duplicate ko strictly A4 (Desktop) size denge
+        // Isko screen par hi rakhenge par piche chupa denge
         clonedResume.style.width = "800px";
         clonedResume.style.maxWidth = "800px";
         clonedResume.style.minHeight = "1131px";
         clonedResume.style.background = "white";
         clonedResume.style.color = "#111";
         clonedResume.style.padding = "40px";
-        clonedResume.style.position = "absolute";
-        clonedResume.style.left = "-9999px"; // Isko screen se bahar dhakel diya
+        clonedResume.style.position = "absolute"; // off-screen nahi kiya
         clonedResume.style.top = "0";
-
-        // 3. Document me add karenge taaki html2pdf isko padh sake
+        clonedResume.style.left = "0";
+        clonedResume.style.zIndex = "-999"; // Website ke piche chupa diya
+        
         document.body.appendChild(clonedResume);
 
-        // 4. PDF ki settings
         const opt = {
             margin: 0,
             filename: fileName,
-            image: { type: "jpeg", quality: 1 },
+            image: { type: "jpeg", quality: 0.98 },
             html2canvas: { 
                 scale: 2, 
                 useCORS: true,
-                windowWidth: 800 // Pura 800px area render karega
+                windowWidth: 800,
+                scrollY: 0 // PDF blank na hone de
             },
             jsPDF: { 
                 unit: "px", 
                 format: [800, 1131], 
-                orientation: "portrait" 
+                orientation: "portrait",
+                compress: true 
             }
         };
 
-        // 5. PDF generate karo aur uske turant baad duplicate ko kachre me daal do
         html2pdf().set(opt).from(clonedResume).save().then(() => {
             document.body.removeChild(clonedResume);
         }).catch(err => {
             console.error(err);
-            document.body.removeChild(clonedResume); // Agar error aaye tab bhi hata do
+            document.body.removeChild(clonedResume);
         });
     });
 }
