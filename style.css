@@ -393,12 +393,11 @@ input[type="month"]{
 }
 
 .entry-header{
-    display:flex;
-    justify-content:space-between;
-
-    gap:15px;
-}
-
+        flex-direction: row; /* Ise row kar diya taaki naam aur date aamne-saamne rahein */
+        flex-wrap: wrap;
+        align-items: baseline;
+    }
+    
 .entry-title{
     font-size:17px;
     font-weight:700;

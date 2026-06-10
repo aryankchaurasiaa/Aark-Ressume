@@ -1069,75 +1069,40 @@ function renderResume() {
 // EDUCATION
 // ==========================
 
-function renderEducation(){
-
-    const entries =
-    document.querySelectorAll(
-    ".education-entry"
-    );
-
+// ==========================
+// EDUCATION RENDER
+// ==========================
+function renderEducation() {
+    const entries = document.querySelectorAll(".education-entry");
     let hasData = false;
-
     let html = `
     <div class="resume-section">
-
-        <div class="resume-title">
-            Education
-        </div>
+        <div class="resume-title">Education</div>
     `;
 
-    entries.forEach(entry=>{
+    entries.forEach(entry => {
+        const institute = entry.querySelector(".institute")?.value || "";
+        const qualification = entry.querySelector(".qualification")?.value || "";
+        const passing = entry.querySelector(".passingDate")?.value || "";
 
-        const institute =
-        entry.querySelector(
-        ".institute"
-        )?.value || "";
-
-        const qualification =
-        entry.querySelector(
-        ".qualification"
-        )?.value || "";
-
-        const passing =
-        entry.querySelector(
-        ".passingDate"
-        )?.value || "";
-
-        if(
-        institute.trim()==="" &&
-        qualification.trim()===""
-        ){
-            return;
-        }
-
+        if (institute.trim() === "" && qualification.trim() === "") return;
         hasData = true;
 
         html += `
         <div class="entry">
-
             <div class="entry-header">
-
-                <div class="entry-title">
-                    ${institute}
-                </div>
-
-                <div class="entry-date">
-                    ${formatMonth(passing)}
-                </div>
-
+                <div class="entry-title">${institute}</div>
+                <div class="entry-date" style="font-weight: 600;">${formatMonth(passing)}</div>
             </div>
-
-            <div class="entry-subtitle">
-                • ${qualification}
+            <div class="entry-subtitle" style="margin-top: 2px; font-size: 15.5px; color: #333;">
+                ${qualification}
             </div>
-
         </div>
         `;
     });
 
     html += `</div>`;
-
-    if(hasData){
+    if (hasData) {
         resumeSections.innerHTML += html;
     }
 }
