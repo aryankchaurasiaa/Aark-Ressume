@@ -1396,64 +1396,39 @@ function renderSkills(){
 // PDF DOWNLOAD
 // ==========================
 
-const downloadBtn =
-document.getElementById(
-"downloadBtn"
-);
-
-if(downloadBtn){
-
-    downloadBtn.addEventListener(
-    "click",
-    ()=>{
-
-        let userName =
-        fullName.value.trim();
-
-        if(userName === ""){
+// ==========================
+// PDF DOWNLOAD
+// ==========================
+const downloadBtn = document.getElementById("downloadBtn");
+if (downloadBtn) {
+    downloadBtn.addEventListener("click", () => {
+        let userName = fullName.value.trim();
+        if (userName === "") {
             userName = "Resume";
         }
 
-        const fileName =
-        userName
-        .replace(/\s+/g,"_")
-        + "_AarK_Resume.pdf";
+        const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
+        const resume = document.getElementById("resumePreview");
 
-        const resume =
-        document.getElementById(
-        "resumePreview"
-        );
-
-        html2pdf()
-        .set({
-
-            margin:0.3,
-
-            filename:fileName,
-
-            image:{
-                type:"jpeg",
-                quality:1
+        html2pdf().set({
+            margin: 0.2, // Mobile ke liye thoda margin kam kiya
+            filename: fileName,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { 
+                scale: 2, // Mobile browsers par 3 scale crash kar deta hai, 2 ekdum perfect hai
+                useCORS: true,
+                letterRendering: true, // Yeh text ko blank hone se rokta hai
+                logging: false
             },
-
-            html2canvas:{
-                scale:3,
-                useCORS:true
-            },
-
-            jsPDF:{
-                unit:"in",
-                format:"a4",
-                orientation:"portrait"
+            jsPDF: { 
+                unit: "in", 
+                format: "a4", 
+                orientation: "portrait",
+                compress: true // PDF ka size optimize karega taaki mobile crash na ho
             }
-
-        })
-        .from(resume)
-        .save();
-
+        }).from(resume).save();
     });
 }
-
 // ==========================
 // INITIAL LOAD
 // ==========================
