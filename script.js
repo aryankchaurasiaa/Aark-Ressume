@@ -1282,7 +1282,7 @@ function renderSkills(){
 }
 
 // ==========================
-// PDF DOWNLOAD (Final Fix with html2pdf)
+// PDF DOWNLOAD (Final Scroll & Blank Fix)
 // ==========================
 const downloadBtn = document.getElementById("downloadBtn");
 if (downloadBtn) {
@@ -1293,23 +1293,33 @@ if (downloadBtn) {
         const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
         const resume = document.getElementById("resumePreview");
 
-        // Simple setting kyunki CSS ne layout pehle hi theek kar diya hai
+        // 1. Mobile Blank Bug Fix: Photo lene se pehle screen scroll ko top par force karo
+        window.scrollTo(0, 0); 
+
+        // 2. Resume ki exact height calculate karo taaki niche extra blank page na aaye
+        const currentHeight = resume.scrollHeight;
+
         const opt = {
             margin: 0,
             filename: fileName,
-            image: { type: "jpeg", quality: 1 },
+            image: { type: "jpeg", quality: 0.98 },
             html2canvas: { 
                 scale: 2, 
                 useCORS: true,
-                windowWidth: 800 // PDF ko batayega ki screen 800px badi hai
+                letterRendering: true,
+                scrollY: 0,      // 👈 Sabse bada fix: Scroll offset ko zero karega
+                scrollX: 0,
+                windowWidth: 800, // CSS se match karti hui width
+                windowHeight: currentHeight // Jitna lamba resume, utni hi badi photo
             },
             jsPDF: { 
                 unit: "px", 
-                format: [800, 1131], 
+                format: [800, currentHeight], // Exact custom height jisse blank space gayab ho jaye
                 orientation: "portrait" 
             }
         };
 
+        // 3. PDF save karo
         html2pdf().set(opt).from(resume).save();
     });
 }
