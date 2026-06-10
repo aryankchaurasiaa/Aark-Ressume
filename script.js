@@ -1282,13 +1282,35 @@ function renderSkills(){
 }
 
 // ==========================
-// PDF DOWNLOAD (Native Print Method - 100% Fail-Proof)
+// PDF DOWNLOAD (Final Fix with html2pdf)
 // ==========================
 const downloadBtn = document.getElementById("downloadBtn");
 if (downloadBtn) {
     downloadBtn.addEventListener("click", () => {
-        // Yeh seedha mobile/desktop ka apna 'Save as PDF' menu khol dega
-        window.print();
+        let userName = fullName.value.trim();
+        if (userName === "") userName = "Resume";
+        
+        const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
+        const resume = document.getElementById("resumePreview");
+
+        // Simple setting kyunki CSS ne layout pehle hi theek kar diya hai
+        const opt = {
+            margin: 0,
+            filename: fileName,
+            image: { type: "jpeg", quality: 1 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true,
+                windowWidth: 800 // PDF ko batayega ki screen 800px badi hai
+            },
+            jsPDF: { 
+                unit: "px", 
+                format: [800, 1131], 
+                orientation: "portrait" 
+            }
+        };
+
+        html2pdf().set(opt).from(resume).save();
     });
 }
 

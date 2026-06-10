@@ -536,25 +536,39 @@ footer{
     font-family: inherit;
 }
 
-/* ==========================
-   PRINT / PDF SETTINGS
-   ========================== */
-@media print {
-    body * {
-        visibility: hidden; /* Form aur baaki sab chupa do */
-    }
-    #resumePreview, #resumePreview * {
-        visibility: visible; /* Sirf resume dikhao */
-    }
-    #resumePreview {
-        position: absolute;
-        left: 0;
-        top: 0;
+/* =========================================
+   STRICT DESKTOP LAYOUT FOR RESUME (ANTI-MOBILE)
+   ========================================= */
+#resumePreview {
+    width: 800px !important; /* Sakht A4 Width */
+    max-width: 800px !important;
+    min-height: 1131px !important;
+    background: white !important;
+    padding: 40px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Date aur Name ko ek line me lock karne ka rule */
+#resumePreview .entry-header {
+    display: flex !important;
+    flex-direction: row !important; /* Mobile ko column banane se rokega */
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    flex-wrap: nowrap !important; /* Tutne se rokega */
+    width: 100% !important;
+}
+
+#resumePreview .entry-date {
+    white-space: nowrap !important;
+    text-align: right !important;
+}
+
+/* Mobile par left-right scroll karne ke liye */
+@media (max-width: 1000px) {
+    .preview-panel {
         width: 100% !important;
-        max-width: 100% !important;
-        min-height: auto !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
+        overflow-x: auto !important; /* Ungli se scroll karne dega */
+        -webkit-overflow-scrolling: touch;
     }
 }
