@@ -535,3 +535,26 @@ footer{
 #resumePreview{
     font-family: inherit;
 }
+
+/* ==========================
+   PRINT / PDF SETTINGS
+   ========================== */
+@media print {
+    body * {
+        visibility: hidden; /* Form aur baaki sab chupa do */
+    }
+    #resumePreview, #resumePreview * {
+        visibility: visible; /* Sirf resume dikhao */
+    }
+    #resumePreview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}

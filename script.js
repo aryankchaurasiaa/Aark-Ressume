@@ -1282,59 +1282,13 @@ function renderSkills(){
 }
 
 // ==========================
-// PDF DOWNLOAD (On-Screen Hidden Clone Method)
+// PDF DOWNLOAD (Native Print Method - 100% Fail-Proof)
 // ==========================
 const downloadBtn = document.getElementById("downloadBtn");
 if (downloadBtn) {
     downloadBtn.addEventListener("click", () => {
-        let userName = fullName.value.trim();
-        if (userName === "") {
-            userName = "Resume";
-        }
-
-        const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
-        const originalResume = document.getElementById("resumePreview");
-
-        const clonedResume = originalResume.cloneNode(true);
-        
-        // Isko screen par hi rakhenge par piche chupa denge
-        clonedResume.style.width = "800px";
-        clonedResume.style.maxWidth = "800px";
-        clonedResume.style.minHeight = "1131px";
-        clonedResume.style.background = "white";
-        clonedResume.style.color = "#111";
-        clonedResume.style.padding = "40px";
-        clonedResume.style.position = "absolute"; // off-screen nahi kiya
-        clonedResume.style.top = "0";
-        clonedResume.style.left = "0";
-        clonedResume.style.zIndex = "-999"; // Website ke piche chupa diya
-        
-        document.body.appendChild(clonedResume);
-
-        const opt = {
-            margin: 0,
-            filename: fileName,
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                windowWidth: 800,
-                scrollY: 0 // PDF blank na hone de
-            },
-            jsPDF: { 
-                unit: "px", 
-                format: [800, 1131], 
-                orientation: "portrait",
-                compress: true 
-            }
-        };
-
-        html2pdf().set(opt).from(clonedResume).save().then(() => {
-            document.body.removeChild(clonedResume);
-        }).catch(err => {
-            console.error(err);
-            document.body.removeChild(clonedResume);
-        });
+        // Yeh seedha mobile/desktop ka apna 'Save as PDF' menu khol dega
+        window.print();
     });
 }
 
