@@ -1065,11 +1065,8 @@ function renderResume() {
         }
     }
 }
-// ==========================
-// EDUCATION
-// ==========================
 
-// ==========================
+/// ==========================
 // EDUCATION RENDER
 // ==========================
 function renderEducation() {
@@ -1088,19 +1085,20 @@ function renderEducation() {
         if (institute.trim() === "" && qualification.trim() === "") return;
         hasData = true;
 
+        // 👇 Yahan maine CSS sidha HTML tag ke andar (inline) daal di hai
         html += `
-        <div class="entry">
-            <div class="entry-header">
-                <div class="entry-title">${institute}</div>
-                <div class="entry-date" style="font-weight: 600;">${formatMonth(passing)}</div>
+        <div class="entry" style="margin-bottom: 18px;">
+            <div class="entry-header" style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
+                <div class="entry-title" style="font-size: 17px; font-weight: 700; padding-right: 15px;">${institute}</div>
+                <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap;">${formatMonth(passing)}</div>
             </div>
-            <div class="entry-subtitle" style="margin-top: 2px; font-size: 15.5px; color: #333;">
+            <div class="entry-subtitle" style="margin-top: 4px; color: #333; font-size: 15.5px;">
                 ${qualification}
             </div>
         </div>
         `;
     });
-    
+
     html += `</div>`;
     if (hasData) {
         resumeSections.innerHTML += html;
@@ -1108,125 +1106,51 @@ function renderEducation() {
 }
 
 // ==========================
-// EXPERIENCE
+// EXPERIENCE RENDER
 // ==========================
-
-function renderExperience(){
-
-    const entries =
-    document.querySelectorAll(
-    ".experience-entry"
-    );
-
+function renderExperience() {
+    const entries = document.querySelectorAll(".experience-entry");
     let hasData = false;
-
     let html = `
     <div class="resume-section">
-
-        <div class="resume-title">
-            Experience
-        </div>
+        <div class="resume-title">Experience</div>
     `;
 
-    entries.forEach(entry=>{
+    entries.forEach(entry => {
+        const company = entry.querySelector(".company")?.value || "";
+        const job = entry.querySelector(".jobTitle")?.value || "";
+        const start = entry.querySelector(".startDate")?.value || "";
+        const end = entry.querySelector(".endDate")?.value || "";
+        const present = entry.querySelector(".presentCheck")?.checked;
+        const points = entry.querySelector(".experiencePoints")?.value || "";
 
-        const company =
-        entry.querySelector(
-        ".company"
-        )?.value || "";
-
-        const job =
-        entry.querySelector(
-        ".jobTitle"
-        )?.value || "";
-
-        const start =
-        entry.querySelector(
-        ".startDate"
-        )?.value || "";
-
-        const end =
-        entry.querySelector(
-        ".endDate"
-        )?.value || "";
-
-        const present =
-        entry.querySelector(
-        ".presentCheck"
-        )?.checked;
-
-        const points =
-        entry.querySelector(
-        ".experiencePoints"
-        )?.value || "";
-
-        if(
-        company.trim()==="" &&
-        job.trim()===""
-        ){
-            return;
-        }
-
+        if (company.trim() === "" && job.trim() === "") return;
         hasData = true;
 
         let bullets = "";
-
-        points
-        .split("\n")
-        .filter(
-        p=>p.trim()!==""
-        )
-        .forEach(point=>{
-
-            bullets += `
-            <li>${point}</li>
-            `;
+        points.split("\n").filter(p => p.trim() !== "").forEach(point => {
+            bullets += `<li style="margin-bottom: 5px; line-height: 1.6;">${point}</li>`;
         });
 
+        // 👇 Yahan bhi same force styling lagayi hai
         html += `
-        <div class="entry">
-
-            <div class="entry-header">
-
-                <div>
-
-                    <div class="entry-title">
-                        ${company}
-                    </div>
-
-                    <div class="entry-subtitle">
-                        ${job}
-                    </div>
-
+        <div class="entry" style="margin-bottom: 18px;">
+            <div class="entry-header" style="display: flex; justify-content: space-between; align-items: baseline; width: 100%;">
+                <div style="padding-right: 15px;">
+                    <div class="entry-title" style="font-size: 17px; font-weight: 700;">${company}</div>
+                    <div class="entry-subtitle" style="margin-top: 4px; color: #555;">${job}</div>
                 </div>
-
-                <div class="entry-date">
-
-                    ${formatMonth(start)}
-
-                    -
-
-                    ${
-                    present
-                    ? "Present"
-                    : formatMonth(end)
-                    }
-
+                <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap;">
+                    ${formatMonth(start)} - ${present ? "Present" : formatMonth(end)}
                 </div>
-
             </div>
-
-            <ul>
-                ${bullets}
-            </ul>
-
+            <ul style="margin-top: 8px; padding-left: 22px;">${bullets}</ul>
         </div>
         `;
     });
 
     html += `</div>`;
-
-    if(hasData){
+    if (hasData) {
         resumeSections.innerHTML += html;
     }
 }
