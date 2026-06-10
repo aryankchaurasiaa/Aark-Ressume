@@ -294,18 +294,15 @@ input[type="month"]{
     width:60%;
 }
 
-#resumePreview{
-    background:white;
-    color:#111;
-
-    min-height:1100px;
-
-    border-radius:20px;
-
-    padding:40px;
-
-    box-shadow:
-    0 15px 40px rgba(0,0,0,.15);
+#resumePreview {
+    width: 800px; /* 👈 Sabse bada fix: A4 Paper Width fix kar diya */
+    min-height: 1131px; /* A4 Paper Height */
+    background: white;
+    color: #111;
+    padding: 40px;
+    box-sizing: border-box;
+    box-shadow: 0 15px 40px rgba(0,0,0,.15);
+    margin: 0 auto;
 }
 
 /* HEADER */
@@ -461,16 +458,23 @@ footer{
 /* MOBILE */
 
 @media(max-width:1000px){
-
     .container{
         flex-direction:column;
     }
 
-    .editor-panel,
-    .preview-panel{
+    .editor-panel {
         width:100%;
+        height:auto;
     }
 
+    .preview-panel{
+        width:100%;
+        overflow-x: auto; /* 👈 Mobile me left-right swipe karne dega */
+        padding-bottom: 20px;
+    }
+
+    /* 🔴 DHYAN DEIN: Agar yahan .entry-header ka koi rule pehle se hai, toh use poora DELET kar dein */
+}
     .editor-panel{
         height:auto;
     }

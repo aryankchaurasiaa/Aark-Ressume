@@ -1282,11 +1282,7 @@ function renderSkills(){
 }
 
 // ==========================
-// PDF DOWNLOAD
-// ==========================
-
-// ==========================
-// PDF DOWNLOAD
+// PDF DOWNLOAD (Fixed A4 Canvas)
 // ==========================
 const downloadBtn = document.getElementById("downloadBtn");
 if (downloadBtn) {
@@ -1299,25 +1295,25 @@ if (downloadBtn) {
         const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
         const resume = document.getElementById("resumePreview");
 
+        // Simple aur clean A4 generation
         html2pdf().set({
-            margin: 0.2, // Mobile ke liye thoda margin kam kiya
+            margin: 0,
             filename: fileName,
-            image: { type: "jpeg", quality: 0.98 },
+            image: { type: "jpeg", quality: 1 },
             html2canvas: { 
-                scale: 2, // Mobile browsers par 3 scale crash kar deta hai, 2 ekdum perfect hai
+                scale: 2, 
                 useCORS: true,
-                letterRendering: true, // Yeh text ko blank hone se rokta hai
-                logging: false
+                windowWidth: 800 // CSS wali exact width set ki
             },
             jsPDF: { 
-                unit: "in", 
-                format: "a4", 
-                orientation: "portrait",
-                compress: true // PDF ka size optimize karega taaki mobile crash na ho
+                unit: "px", 
+                format: [800, 1131], // Custom exact canvas size
+                orientation: "portrait" 
             }
         }).from(resume).save();
     });
 }
+
 // ==========================
 // INITIAL LOAD
 // ==========================
