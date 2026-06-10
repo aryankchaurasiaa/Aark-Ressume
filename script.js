@@ -1282,7 +1282,7 @@ function renderSkills(){
 }
 
 // ==========================
-// PDF DOWNLOAD (Fixed A4 Canvas)
+// PDF DOWNLOAD (Off-Screen Clone Method - 100% Mobile Proof)
 // ==========================
 const downloadBtn = document.getElementById("downloadBtn");
 if (downloadBtn) {
@@ -1293,24 +1293,49 @@ if (downloadBtn) {
         }
 
         const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
-        const resume = document.getElementById("resumePreview");
+        const originalResume = document.getElementById("resumePreview");
 
-        // Simple aur clean A4 generation
-        html2pdf().set({
+        // 1. Ek duplicate resume banayenge jo screen par nahi dikhega
+        const clonedResume = originalResume.cloneNode(true);
+        
+        // 2. Is duplicate ko strictly A4 (Desktop) size denge
+        clonedResume.style.width = "800px";
+        clonedResume.style.maxWidth = "800px";
+        clonedResume.style.minHeight = "1131px";
+        clonedResume.style.background = "white";
+        clonedResume.style.color = "#111";
+        clonedResume.style.padding = "40px";
+        clonedResume.style.position = "absolute";
+        clonedResume.style.left = "-9999px"; // Isko screen se bahar dhakel diya
+        clonedResume.style.top = "0";
+
+        // 3. Document me add karenge taaki html2pdf isko padh sake
+        document.body.appendChild(clonedResume);
+
+        // 4. PDF ki settings
+        const opt = {
             margin: 0,
             filename: fileName,
             image: { type: "jpeg", quality: 1 },
             html2canvas: { 
                 scale: 2, 
                 useCORS: true,
-                windowWidth: 800 // CSS wali exact width set ki
+                windowWidth: 800 // Pura 800px area render karega
             },
             jsPDF: { 
                 unit: "px", 
-                format: [800, 1131], // Custom exact canvas size
+                format: [800, 1131], 
                 orientation: "portrait" 
             }
-        }).from(resume).save();
+        };
+
+        // 5. PDF generate karo aur uske turant baad duplicate ko kachre me daal do
+        html2pdf().set(opt).from(clonedResume).save().then(() => {
+            document.body.removeChild(clonedResume);
+        }).catch(err => {
+            console.error(err);
+            document.body.removeChild(clonedResume); // Agar error aaye tab bhi hata do
+        });
     });
 }
 
