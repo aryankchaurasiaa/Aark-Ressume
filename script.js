@@ -1100,7 +1100,7 @@ function renderEducation() {
         </div>
         `;
     });
-
+    
     html += `</div>`;
     if (hasData) {
         resumeSections.innerHTML += html;
