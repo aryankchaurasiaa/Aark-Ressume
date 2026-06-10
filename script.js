@@ -1,0 +1,1622 @@
+// // function generateResume() {
+// //   // Get values from form
+// //   const name = document.getElementById("name").value;
+// //   const email = document.getElementById("email").value;
+// //   const phone = document.getElementById("phone").value;
+// //   const address = document.getElementById("address").value;
+
+// //   const education = document.getElementById("education").value;
+// //   const experience = document.getElementById("experience").value;
+// //   const skills = document.getElementById("skills").value;
+// //   const projects = document.getElementById("projects").value;
+
+// //   // Set preview values
+// //   document.getElementById("r-name").innerText = name || "Your Name";
+
+// //   document.getElementById("r-contact").innerText =
+// //     `${email} | ${phone} | ${address}`;
+
+// //   document.getElementById("r-education").innerText = education;
+// //   document.getElementById("r-experience").innerText = experience;
+// //   document.getElementById("r-projects").innerText = projects;
+
+// //   // Skills list
+// //   const skillsList = document.getElementById("r-skills");
+// //   skillsList.innerHTML = "";
+
+// //   if (skills) {
+// //     skills.split(",").forEach(skill => {
+// //       const li = document.createElement("li");
+// //       li.innerText = skill.trim();
+// //       skillsList.appendChild(li);
+// //     });
+// //   }
+// // }
+
+// // function downloadPDF() {
+// //   const element = document.getElementById("resume");
+
+// //   const opt = {
+// //     margin: 0.5,
+// //     filename: 'AarK_Resume.pdf',
+// //     image: { type: 'jpeg', quality: 0.98 },
+// //     html2canvas: { scale: 2 },
+// //     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+// //   };
+
+// //   html2pdf().set(opt).from(element).save();
+// // }
+
+
+// // ==========================
+// // GLOBAL DATA
+// // ==========================
+
+// let educations = [];
+// let experiences = [];
+// let projects = [];
+
+// // ==========================
+// // ELEMENTS
+// // ==========================
+
+// const fullName = document.getElementById("fullName");
+// const email = document.getElementById("email");
+// const phone = document.getElementById("phone");
+// const address = document.getElementById("address");
+// const summary = document.getElementById("summary");
+
+// const previewName = document.getElementById("previewName");
+// const previewContact = document.getElementById("previewContact");
+// const previewSummary = document.getElementById("previewSummary");
+
+// const photoInput = document.getElementById("photoInput");
+// const previewPhoto = document.getElementById("previewPhoto");
+
+// const educationContainer =
+// document.getElementById("educationContainer");
+
+// const experienceContainer =
+// document.getElementById("experienceContainer");
+
+// const projectContainer =
+// document.getElementById("projectContainer");
+
+// const resumeSections =
+// document.getElementById("resumeSections");
+
+// // ==========================
+// // LIVE PREVIEW
+// // ==========================
+
+// function updateBasicInfo() {
+
+//     previewName.textContent =
+//         fullName.value || "Your Name";
+
+//     previewContact.textContent =
+//         `${email.value || "Email"} | ${phone.value || "Phone"} | ${address.value || "Address"}`;
+
+//     previewSummary.textContent =
+//         summary.value || "Professional Summary";
+// }
+
+// fullName.addEventListener("input", updateBasicInfo);
+// email.addEventListener("input", updateBasicInfo);
+// phone.addEventListener("input", updateBasicInfo);
+// address.addEventListener("input", updateBasicInfo);
+// summary.addEventListener("input", updateBasicInfo);
+
+// // ==========================
+// // PHOTO UPLOAD
+// // ==========================
+
+// photoInput.addEventListener("change", function () {
+
+//     const file = this.files[0];
+
+//     if (!file) return;
+
+//     const reader = new FileReader();
+
+//     reader.onload = function (e) {
+
+//         previewPhoto.src = e.target.result;
+
+//         previewPhoto.style.display = "block";
+//     };
+
+//     reader.readAsDataURL(file);
+// });
+
+// // ==========================
+// // ADD EDUCATION
+// // ==========================
+
+// document
+// .getElementById("addEducationBtn")
+// .addEventListener("click", () => {
+
+//     const template =
+//         document
+//         .getElementById("educationTemplate");
+
+//     const clone =
+//         template.content.cloneNode(true);
+
+//     educationContainer.appendChild(clone);
+
+//     renderResume();
+// });
+
+// // ==========================
+// // ADD EXPERIENCE
+// // ==========================
+
+// document
+// .getElementById("addExperienceBtn")
+// .addEventListener("click", () => {
+
+//     const template =
+//         document
+//         .getElementById("experienceTemplate");
+
+//     const clone =
+//         template.content.cloneNode(true);
+
+//     experienceContainer.appendChild(clone);
+
+//     renderResume();
+// });
+
+// // ==========================
+// // ADD PROJECT
+// // ==========================
+
+// document
+// .getElementById("addProjectBtn")
+// .addEventListener("click", () => {
+
+//     const template =
+//         document
+//         .getElementById("projectTemplate");
+
+//     const clone =
+//         template.content.cloneNode(true);
+
+//     projectContainer.appendChild(clone);
+
+//     renderResume();
+// });
+
+// // ==========================
+// // AUTO UPDATE
+// // ==========================
+
+// document.addEventListener("input", () => {
+//     renderResume();
+// });
+
+// // ==========================
+// // INITIAL
+// // ==========================
+
+// updateBasicInfo();
+// // ==========================
+// // REMOVE ENTRY
+// // ==========================
+
+// document.addEventListener("click", function (e) {
+
+//     if (e.target.classList.contains("remove-entry")) {
+
+//         e.target.parentElement.remove();
+
+//         renderResume();
+//     }
+
+// });
+
+// // ==========================
+// // RENDER RESUME
+// // ==========================
+
+// function renderResume() {
+
+//     resumeSections.innerHTML = "";
+
+//     renderEducation();
+
+//     renderExperience();
+
+//     renderProjects();
+
+//     renderSkills();
+// }
+
+// // ==========================
+// // EDUCATION
+// // ==========================
+
+// function renderEducation() {
+
+//     const entries =
+//         document.querySelectorAll(".education-entry");
+
+//     if (entries.length === 0) return;
+
+//     let html = `
+//     <div class="resume-section">
+
+//         <div class="resume-title">
+//             Education
+//         </div>
+//     `;
+
+//     entries.forEach(entry => {
+
+//         const institute =
+//             entry.querySelector(".institute")?.value || "";
+
+//         const qualification =
+//             entry.querySelector(".qualification")?.value || "";
+
+//         const passing =
+//             entry.querySelector(".passingDate")?.value || "";
+
+//         if (
+//             institute.trim() === "" &&
+//             qualification.trim() === ""
+//         ) return;
+
+//         html += `
+//         <div class="entry">
+
+//             <div class="entry-header">
+
+//                 <div class="entry-title">
+//                     ${institute}
+//                 </div>
+
+//                 <div class="entry-date">
+//                     ${passing}
+//                 </div>
+
+//             </div>
+
+//             <div class="entry-subtitle">
+//                 • ${qualification}
+//             </div>
+
+//         </div>
+//         `;
+//     });
+
+//     html += `</div>`;
+
+//     resumeSections.innerHTML += html;
+// }
+
+// // ==========================
+// // EXPERIENCE
+// // ==========================
+
+// function renderExperience() {
+
+//     const entries =
+//         document.querySelectorAll(".experience-entry");
+
+//     if (entries.length === 0) return;
+
+//     let html = `
+//     <div class="resume-section">
+
+//         <div class="resume-title">
+//             Experience
+//         </div>
+//     `;
+
+//     entries.forEach(entry => {
+
+//         const company =
+//             entry.querySelector(".company")?.value || "";
+
+//         const job =
+//             entry.querySelector(".jobTitle")?.value || "";
+
+//         const start =
+//             entry.querySelector(".startDate")?.value || "";
+
+//         const end =
+//             entry.querySelector(".endDate")?.value || "";
+
+//         const present =
+//             entry.querySelector(".presentCheck")?.checked;
+
+//         const points =
+//             entry.querySelector(".experiencePoints")?.value || "";
+
+//         if (
+//             company.trim() === "" &&
+//             job.trim() === ""
+//         ) return;
+
+//         let bullets = "";
+
+//         points
+//         .split("\n")
+//         .filter(p => p.trim() !== "")
+//         .forEach(point => {
+
+//             bullets += `
+//             <li>${point}</li>
+//             `;
+//         });
+
+//         html += `
+//         <div class="entry">
+
+//             <div class="entry-header">
+
+//                 <div>
+
+//                     <div class="entry-title">
+//                         ${company}
+//                     </div>
+
+//                     <div class="entry-subtitle">
+//                         ${job}
+//                     </div>
+
+//                 </div>
+
+//                 <div class="entry-date">
+//                     ${start}
+//                     -
+//                     ${present ? "Present" : end}
+//                 </div>
+
+//             </div>
+
+//             <ul>
+//                 ${bullets}
+//             </ul>
+
+//         </div>
+//         `;
+//     });
+
+//     html += `</div>`;
+
+//     resumeSections.innerHTML += html;
+// }
+
+// // ==========================
+// // PROJECTS
+// // ==========================
+
+// function renderProjects() {
+
+//     const entries =
+//         document.querySelectorAll(".project-entry");
+
+//     if (entries.length === 0) return;
+
+//     let html = `
+//     <div class="resume-section">
+
+//         <div class="resume-title">
+//             Projects
+//         </div>
+//     `;
+
+//     entries.forEach(entry => {
+
+//         const project =
+//             entry.querySelector(".projectName")?.value || "";
+
+//         const points =
+//             entry.querySelector(".projectPoints")?.value || "";
+
+//         if (
+//             project.trim() === ""
+//         ) return;
+
+//         let bullets = "";
+
+//         points
+//         .split("\n")
+//         .filter(p => p.trim() !== "")
+//         .forEach(point => {
+
+//             bullets += `
+//             <li>${point}</li>
+//             `;
+//         });
+
+//         html += `
+//         <div class="entry">
+
+//             <div class="entry-title">
+//                 ${project}
+//             </div>
+
+//             <ul>
+//                 ${bullets}
+//             </ul>
+
+//         </div>
+//         `;
+//     });
+
+//     html += `</div>`;
+
+//     resumeSections.innerHTML += html;
+// }
+
+// // ==========================
+// // SKILLS
+// // ==========================
+
+// function renderSkills() {
+
+//     const skillsInput =
+//         document.getElementById("skillsInput");
+
+//     const skills =
+//         skillsInput.value
+//         .split("\n")
+//         .filter(skill => skill.trim() !== "");
+
+//     if (skills.length === 0) return;
+
+//     let html = `
+//     <div class="resume-section">
+
+//         <div class="resume-title">
+//             Skills
+//         </div>
+
+//         <ul class="skills-list">
+//     `;
+
+//     skills.forEach(skill => {
+
+//         html += `
+//         <li>${skill}</li>
+//         `;
+//     });
+
+//     html += `
+//         </ul>
+
+//     </div>
+//     `;
+
+//     resumeSections.innerHTML += html;
+// }
+// // ==========================
+// // HIDE / SHOW SECTION
+// // ==========================
+
+// document.addEventListener("click", function (e) {
+
+//     const hideBtn =
+//         e.target.closest(".hide-btn");
+
+//     if (!hideBtn) return;
+
+//     const section =
+//         hideBtn.closest(".section-card");
+
+//     section.classList.toggle("section-hidden");
+
+//     const icon =
+//         hideBtn.querySelector("i");
+
+//     if (
+//         section.classList.contains(
+//             "section-hidden"
+//         )
+//     ) {
+
+//         icon.classList.remove(
+//             "fa-eye"
+//         );
+
+//         icon.classList.add(
+//             "fa-eye-slash"
+//         );
+
+//     } else {
+
+//         icon.classList.remove(
+//             "fa-eye-slash"
+//         );
+
+//         icon.classList.add(
+//             "fa-eye"
+//         );
+//     }
+
+// });
+
+// // ==========================
+// // DELETE SECTION
+// // ==========================
+
+// document.addEventListener("click", function (e) {
+
+//     const deleteBtn =
+//         e.target.closest(".delete-btn");
+
+//     if (!deleteBtn) return;
+
+//     const section =
+//         deleteBtn.closest(".section-card");
+
+//     if (
+//         confirm(
+//             "Delete this section?"
+//         )
+//     ) {
+
+//         section.remove();
+
+//         renderResume();
+//     }
+
+// });
+
+// // ==========================
+// // MOVE UP
+// // ==========================
+
+// document.addEventListener("click", function (e) {
+
+//     const upBtn =
+//         e.target.closest(".up-btn");
+
+//     if (!upBtn) return;
+
+//     const section =
+//         upBtn.closest(".section-card");
+
+//     const prev =
+//         section.previousElementSibling;
+
+//     if (
+//         prev &&
+//         prev.classList.contains(
+//             "movable-section"
+//         )
+//     ) {
+
+//         section.parentNode.insertBefore(
+//             section,
+//             prev
+//         );
+//     }
+
+// });
+
+// // ==========================
+// // MOVE DOWN
+// // ==========================
+
+// document.addEventListener("click", function (e) {
+
+//     const downBtn =
+//         e.target.closest(".down-btn");
+
+//     if (!downBtn) return;
+
+//     const section =
+//         downBtn.closest(".section-card");
+
+//     const next =
+//         section.nextElementSibling;
+
+//     if (
+//         next &&
+//         next.classList.contains(
+//             "movable-section"
+//         )
+//     ) {
+
+//         next.after(section);
+//     }
+
+// });
+
+// // ==========================
+// // PDF DOWNLOAD
+// // ==========================
+
+// document
+// .getElementById("downloadBtn")
+// .addEventListener("click", () => {
+
+//     let userName =
+//         fullName.value.trim();
+
+//     if (
+//         userName === ""
+//     ) {
+
+//         userName =
+//             "Resume";
+//     }
+
+//     const fileName =
+//         userName
+//         .replace(/\s+/g, "_")
+//         + "_Resume.pdf";
+
+//     const resume =
+//         document.getElementById(
+//             "resumePreview"
+//         );
+
+//     html2pdf()
+//     .set({
+
+//         margin:0.3,
+
+//         filename:fileName,
+
+//         image:{
+//             type:"jpeg",
+//             quality:1
+//         },
+
+//         html2canvas:{
+//             scale:2
+//         },
+
+//         jsPDF:{
+//             unit:"in",
+//             format:"a4",
+//             orientation:"portrait"
+//         }
+
+//     })
+//     .from(resume)
+//     .save();
+
+// });
+
+// // ==========================
+// // INITIAL ENTRY
+// // ==========================
+
+// document
+// .getElementById(
+//     "addEducationBtn"
+// )
+// .click();
+
+// document
+// .getElementById(
+//     "addExperienceBtn"
+// )
+// .click();
+
+// document
+// .getElementById(
+//     "addProjectBtn"
+// )
+// .click();
+
+// // ==========================
+// // INITIAL RENDER
+// // ==========================
+
+// updateBasicInfo();
+
+// renderResume();
+
+
+// ==========================
+// ELEMENTS
+// ==========================
+let isRendering = false;
+
+const fullName =
+document.getElementById("fullName");
+
+const email =
+document.getElementById("email");
+
+const phone =
+document.getElementById("phone");
+
+const address =
+document.getElementById("address");
+
+const summary =
+document.getElementById("summary");
+
+const previewName =
+document.getElementById("previewName");
+
+const previewContact =
+document.getElementById("previewContact");
+
+const previewSummary =
+document.getElementById("previewSummary");
+
+const photoInput =
+document.getElementById("photoInput");
+
+const previewPhoto =
+document.getElementById("previewPhoto");
+
+const educationContainer =
+document.getElementById(
+"educationContainer"
+);
+
+const experienceContainer =
+document.getElementById(
+"experienceContainer"
+);
+
+const projectContainer =
+document.getElementById(
+"projectContainer"
+);
+
+const resumeSections =
+document.getElementById(
+"resumeSections"
+);
+
+// ==========================
+// DATE FORMAT
+// ==========================
+
+function formatMonth(dateString){
+
+    if(!dateString) return "";
+
+    const [year,month] =
+    dateString.split("-");
+
+    const months = [
+        "Jan","Feb","Mar",
+        "Apr","May","Jun",
+        "Jul","Aug","Sep",
+        "Oct","Nov","Dec"
+    ];
+
+    return `${
+        months[
+        parseInt(month)-1
+        ]
+    } ${year}`;
+}
+
+// ==========================
+// BASIC INFO
+// ==========================
+
+function updateBasicInfo(){
+
+    previewName.textContent =
+    fullName.value ||
+    "Your Name";
+
+    previewContact.textContent =
+    `${email.value || "Email"} | ${phone.value || "Phone"} | ${address.value || "Address"}`;
+
+    previewSummary.textContent =
+    summary.value ||
+    "Professional Summary";
+}
+
+fullName.addEventListener(
+"input",
+updateBasicInfo
+);
+
+email.addEventListener(
+"input",
+updateBasicInfo
+);
+
+phone.addEventListener(
+"input",
+updateBasicInfo
+);
+
+address.addEventListener(
+"input",
+updateBasicInfo
+);
+
+summary.addEventListener(
+"input",
+updateBasicInfo
+);
+
+// ==========================
+// PHOTO
+// ==========================
+
+photoInput.addEventListener(
+"change",
+function(){
+
+    const file =
+    this.files[0];
+
+    if(!file) return;
+
+    const reader =
+    new FileReader();
+
+    reader.onload =
+    function(e){
+
+        previewPhoto.src =
+        e.target.result;
+
+        previewPhoto.style.display =
+        "block";
+    };
+
+    reader.readAsDataURL(file);
+});
+// ==========================
+// ADD EDUCATION
+// ==========================
+
+document
+.getElementById("addEducationBtn")
+.addEventListener("click",()=>{
+
+    const template =
+    document.getElementById(
+    "educationTemplate"
+    );
+
+    const clone =
+    template.content.cloneNode(true);
+
+    educationContainer.appendChild(
+    clone
+    );
+
+    renderResume();
+});
+
+// ==========================
+// ADD EXPERIENCE
+// ==========================
+
+document
+.getElementById("addExperienceBtn")
+.addEventListener("click",()=>{
+
+    const template =
+    document.getElementById(
+    "experienceTemplate"
+    );
+
+    const clone =
+    template.content.cloneNode(true);
+
+    experienceContainer.appendChild(
+    clone
+    );
+
+    renderResume();
+});
+
+// ==========================
+// ADD PROJECT
+// ==========================
+
+document
+.getElementById("addProjectBtn")
+.addEventListener("click",()=>{
+
+    const template =
+    document.getElementById(
+    "projectTemplate"
+    );
+
+    const clone =
+    template.content.cloneNode(true);
+
+    projectContainer.appendChild(
+    clone
+    );
+
+    renderResume();
+});
+
+// ==========================
+// REMOVE ENTRY
+// ==========================
+
+document.addEventListener(
+"click",
+function(e){
+
+    const removeBtn =
+    e.target.closest(
+    ".remove-entry"
+    );
+
+    if(removeBtn){
+
+        removeBtn
+        .parentElement
+        .remove();
+
+        renderResume();
+    }
+
+});
+
+// ==========================
+// PRESENT CHECKBOX
+// ==========================
+
+document.addEventListener(
+"change",
+function(e){
+
+    if(
+    e.target.classList.contains(
+    "presentCheck"
+    )
+    ){
+
+        const card =
+        e.target.closest(
+        ".experience-entry"
+        );
+
+        const endDate =
+        card.querySelector(
+        ".endDate"
+        );
+
+        endDate.disabled =
+        e.target.checked;
+
+        if(
+        e.target.checked
+        ){
+            endDate.value = "";
+        }
+
+        renderResume();
+    }
+
+});
+
+// ==========================
+// AUTO UPDATE
+// ==========================
+
+document.addEventListener(
+"input",
+function(){
+
+    renderResume();
+});
+
+// ==========================
+// INITIAL ENTRY
+// ==========================
+
+document
+.getElementById(
+"addEducationBtn"
+)
+.click();
+
+document
+.getElementById(
+"addExperienceBtn"
+)
+.click();
+
+document
+.getElementById(
+"addProjectBtn"
+)
+.click();
+// ==========================
+// MAIN RENDER
+// ==========================
+
+function renderResume() {
+
+    resumeSections.innerHTML = "";
+
+    const sections = Array.from(document.querySelectorAll(".movable-section"));
+
+    for (let section of sections) {
+
+        if (section.dataset.hidden === "true") continue;
+
+        switch (section.id) {
+
+            case "educationSection":
+                renderEducation();
+                break;
+
+            case "experienceSection":
+                renderExperience();
+                break;
+
+            case "projectsSection":
+                renderProjects();
+                break;
+
+            case "skillsSection":
+                renderSkills();
+                break;
+        }
+    }
+}
+// ==========================
+// EDUCATION
+// ==========================
+
+function renderEducation(){
+
+    const entries =
+    document.querySelectorAll(
+    ".education-entry"
+    );
+
+    let hasData = false;
+
+    let html = `
+    <div class="resume-section">
+
+        <div class="resume-title">
+            Education
+        </div>
+    `;
+
+    entries.forEach(entry=>{
+
+        const institute =
+        entry.querySelector(
+        ".institute"
+        )?.value || "";
+
+        const qualification =
+        entry.querySelector(
+        ".qualification"
+        )?.value || "";
+
+        const passing =
+        entry.querySelector(
+        ".passingDate"
+        )?.value || "";
+
+        if(
+        institute.trim()==="" &&
+        qualification.trim()===""
+        ){
+            return;
+        }
+
+        hasData = true;
+
+        html += `
+        <div class="entry">
+
+            <div class="entry-header">
+
+                <div class="entry-title">
+                    ${institute}
+                </div>
+
+                <div class="entry-date">
+                    ${formatMonth(passing)}
+                </div>
+
+            </div>
+
+            <div class="entry-subtitle">
+                • ${qualification}
+            </div>
+
+        </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    if(hasData){
+        resumeSections.innerHTML += html;
+    }
+}
+
+// ==========================
+// EXPERIENCE
+// ==========================
+
+function renderExperience(){
+
+    const entries =
+    document.querySelectorAll(
+    ".experience-entry"
+    );
+
+    let hasData = false;
+
+    let html = `
+    <div class="resume-section">
+
+        <div class="resume-title">
+            Experience
+        </div>
+    `;
+
+    entries.forEach(entry=>{
+
+        const company =
+        entry.querySelector(
+        ".company"
+        )?.value || "";
+
+        const job =
+        entry.querySelector(
+        ".jobTitle"
+        )?.value || "";
+
+        const start =
+        entry.querySelector(
+        ".startDate"
+        )?.value || "";
+
+        const end =
+        entry.querySelector(
+        ".endDate"
+        )?.value || "";
+
+        const present =
+        entry.querySelector(
+        ".presentCheck"
+        )?.checked;
+
+        const points =
+        entry.querySelector(
+        ".experiencePoints"
+        )?.value || "";
+
+        if(
+        company.trim()==="" &&
+        job.trim()===""
+        ){
+            return;
+        }
+
+        hasData = true;
+
+        let bullets = "";
+
+        points
+        .split("\n")
+        .filter(
+        p=>p.trim()!==""
+        )
+        .forEach(point=>{
+
+            bullets += `
+            <li>${point}</li>
+            `;
+        });
+
+        html += `
+        <div class="entry">
+
+            <div class="entry-header">
+
+                <div>
+
+                    <div class="entry-title">
+                        ${company}
+                    </div>
+
+                    <div class="entry-subtitle">
+                        ${job}
+                    </div>
+
+                </div>
+
+                <div class="entry-date">
+
+                    ${formatMonth(start)}
+
+                    -
+
+                    ${
+                    present
+                    ? "Present"
+                    : formatMonth(end)
+                    }
+
+                </div>
+
+            </div>
+
+            <ul>
+                ${bullets}
+            </ul>
+
+        </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    if(hasData){
+        resumeSections.innerHTML += html;
+    }
+}
+
+// ==========================
+// PROJECTS
+// ==========================
+
+function renderProjects(){
+
+    const entries =
+    document.querySelectorAll(
+    ".project-entry"
+    );
+
+    let hasData = false;
+
+    let html = `
+    <div class="resume-section">
+
+        <div class="resume-title">
+            Projects
+        </div>
+    `;
+
+    entries.forEach(entry=>{
+
+        const project =
+        entry.querySelector(
+        ".projectName"
+        )?.value || "";
+
+        const points =
+        entry.querySelector(
+        ".projectPoints"
+        )?.value || "";
+
+        if(
+        project.trim()===""
+        ){
+            return;
+        }
+
+        hasData = true;
+
+        let bullets = "";
+
+        points
+        .split("\n")
+        .filter(
+        p=>p.trim()!==""
+        )
+        .forEach(point=>{
+
+            bullets += `
+            <li>${point}</li>
+            `;
+        });
+
+        html += `
+        <div class="entry">
+
+            <div class="entry-title">
+                ${project}
+            </div>
+
+            <ul>
+                ${bullets}
+            </ul>
+
+        </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    if(hasData){
+        resumeSections.innerHTML += html;
+    }
+}
+// ==========================
+// SKILLS
+// ==========================
+
+function renderSkills(){
+
+    const skillsInput =
+    document.getElementById(
+    "skillsInput"
+    );
+
+    if(!skillsInput) return;
+
+    const skills =
+    skillsInput.value
+    .split("\n")
+    .filter(
+    skill => skill.trim() !== ""
+    );
+
+    if(skills.length === 0){
+        return;
+    }
+
+    let html = `
+    <div class="resume-section">
+
+        <div class="resume-title">
+            Skills
+        </div>
+
+        <ul class="skills-list">
+    `;
+
+    skills.forEach(skill=>{
+
+        html += `
+        <li>${skill}</li>
+        `;
+    });
+
+    html += `
+        </ul>
+
+    </div>
+    `;
+
+    resumeSections.innerHTML += html;
+}
+
+// ==========================
+// PDF DOWNLOAD
+// ==========================
+
+const downloadBtn =
+document.getElementById(
+"downloadBtn"
+);
+
+if(downloadBtn){
+
+    downloadBtn.addEventListener(
+    "click",
+    ()=>{
+
+        let userName =
+        fullName.value.trim();
+
+        if(userName === ""){
+            userName = "Resume";
+        }
+
+        const fileName =
+        userName
+        .replace(/\s+/g,"_")
+        + "_AarK_Resume.pdf";
+
+        const resume =
+        document.getElementById(
+        "resumePreview"
+        );
+
+        html2pdf()
+        .set({
+
+            margin:0.3,
+
+            filename:fileName,
+
+            image:{
+                type:"jpeg",
+                quality:1
+            },
+
+            html2canvas:{
+                scale:3,
+                useCORS:true
+            },
+
+            jsPDF:{
+                unit:"in",
+                format:"a4",
+                orientation:"portrait"
+            }
+
+        })
+        .from(resume)
+        .save();
+
+    });
+}
+
+// ==========================
+// INITIAL LOAD
+// ==========================
+
+updateBasicInfo();
+
+renderResume();
+
+// ==========================
+// PAGE READY
+// ==========================
+
+window.addEventListener(
+"load",
+()=>{
+
+    updateBasicInfo();
+
+    renderResume();
+
+});
+// ==========================
+// HIDE SECTION
+// ==========================
+
+document.addEventListener("click", function(e){
+
+    const hideBtn = e.target.closest(".hide-btn");
+
+    if(!hideBtn) return;
+
+    const section = hideBtn.closest(".section-card");
+
+    const icon = hideBtn.querySelector("i");
+
+    const content = section.querySelector(
+        "#educationContainer, #experienceContainer, #projectContainer, #skillsInput"
+    );
+
+    const addBtn = section.querySelector(".add-btn");
+
+    const isHidden = section.dataset.hidden === "true";
+
+    if(isHidden){
+
+        section.dataset.hidden = "false";
+
+        content.style.display = "block";
+
+        if(addBtn) addBtn.style.display = "flex";
+
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+
+    } else {
+
+        section.dataset.hidden = "true";
+
+        content.style.display = "none";
+
+        if(addBtn) addBtn.style.display = "none";
+
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }
+
+    renderResume(); // 🔥 IMPORTANT
+});
+// ==========================
+// DELETE SECTION
+// ==========================
+
+document.addEventListener("click", function(e){
+
+    const deleteBtn =
+    e.target.closest(".delete-btn");
+
+    if(!deleteBtn) return;
+
+    const section =
+    deleteBtn.closest(".section-card");
+
+    if(
+        confirm(
+        "Delete this section?"
+        )
+    ){
+
+        section.style.display = "none";
+    }
+
+});
+
+// ==========================
+// MOVE UP
+// ==========================
+
+document.addEventListener("click", function(e){
+
+    const upBtn = e.target.closest(".up-btn");
+    if(!upBtn) return;
+
+    const section = upBtn.closest(".movable-section");
+    const prev = section.previousElementSibling;
+
+    if(prev && prev.classList.contains("movable-section")){
+
+        prev.before(section);
+
+        setTimeout(() => {
+            renderResume();
+        }, 0);
+    }
+});
+
+// ==========================
+// MOVE DOWN
+// ==========================
+
+document.addEventListener("click", function(e){
+
+    const downBtn = e.target.closest(".down-btn");
+    if(!downBtn) return;
+
+    const section = downBtn.closest(".movable-section");
+    const next = section.nextElementSibling;
+
+    if(next && next.classList.contains("movable-section")){
+
+        next.after(section);
+
+        setTimeout(() => {
+            renderResume();
+        }, 0);
+    }
+});
+// ==========================
+// FONT CHANGING EFFECT
+// ==========================
+window.addEventListener("load", () => {
+    const fontSelect = document.getElementById("fontSelect");
+    if (!fontSelect) return;
+
+    function applyFont() {
+        const selectedFont = fontSelect.value;
+        const previewEl = document.getElementById("resumePreview");
+        
+        if (previewEl) {
+            previewEl.style.setProperty("font-family", selectedFont, "important");
+            previewEl.querySelectorAll("*").forEach(el => {
+                el.style.setProperty("font-family", selectedFont, "important");
+            });
+        }
+    }
+
+    fontSelect.addEventListener("change", applyFont);
+
+    // Jab bhi naya text add hoga, ye turant font apply kar dega
+    const observer = new MutationObserver(applyFont);
+    const targetSection = document.getElementById("resumeSections");
+    if (targetSection) {
+        observer.observe(targetSection, { childList: true, subtree: true });
+    }
+    
+    applyFont();
+});
