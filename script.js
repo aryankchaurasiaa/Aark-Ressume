@@ -1093,7 +1093,7 @@ function renderEducation() {
                 <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap !important; min-width: 80px; text-align: right;">${formatMonth(passing)}</div>
             </div>
             <div class="entry-subtitle" style="margin-top: 4px; color: #333; font-size: 15.5px;">
-                ${qualification}
+                ${qualification ? '• ' + qualification : ''}
             </div>
         </div>
         `;
@@ -1138,7 +1138,9 @@ function renderExperience() {
             <div class="entry-header" style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: nowrap !important;">
                 <div style="padding-right: 15px; width: 70%;">
                     <div class="entry-title" style="font-size: 17px; font-weight: 700;">${company}</div>
-                    <div class="entry-subtitle" style="margin-top: 4px; color: #555;">${job}</div>
+                    <div class="entry-subtitle" style="margin-top: 4px; color: #555;">
+                        ${job ? '• ' + job : ''}
+                    </div>
                 </div>
                 <div class="entry-date" style="color: #444; font-weight: 600; white-space: nowrap !important; min-width: 100px; text-align: right;">
                     ${formatMonth(start)} - ${present ? "Present" : formatMonth(end)}

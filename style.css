@@ -547,6 +547,7 @@ footer{
     padding: 40px !important;
     margin: 0 auto !important;
     box-sizing: border-box !important;
+    border: 3px solid #38b6ff !important;
 }
 
 /* Date aur Name ko ek line me lock karne ka rule */
@@ -570,5 +571,29 @@ footer{
         width: 100% !important;
         overflow-x: auto !important; /* Ungli se scroll karne dega */
         -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* =========================================
+   STICKY PREVIEW PANEL FOR DESKTOP
+   ========================================= */
+@media (min-width: 1001px) {
+    .container {
+        align-items: flex-start !important; 
+    }
+
+    .preview-panel {
+        position: sticky !important;
+        top: 20px !important; 
+        max-height: 95vh !important; 
+        overflow-y: auto !important; 
+    }
+    
+    .preview-panel::-webkit-scrollbar {
+        width: 8px;
+    }
+    .preview-panel::-webkit-scrollbar-thumb {
+        background-color: #38b6ff; 
+        border-radius: 10px;
     }
 }
