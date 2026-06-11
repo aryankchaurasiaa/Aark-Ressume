@@ -358,19 +358,9 @@ footer {
         padding-bottom: 20px;
         -webkit-overflow-scrolling: touch;
     }
-    #resumePreview {
-        padding: 25px !important;
-    }
-    .resume-header {
-        flex-direction: column-reverse;
-        align-items: center;
-        text-align: center;
-    }
-    #previewPhoto {
-        width: 110px;
-        height: 110px;
-    }
+
 }
+
 
 /* =========================================
    DESKTOP OPTIMIZATIONS (STICKY UI)
