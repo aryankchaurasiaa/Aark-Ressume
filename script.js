@@ -168,13 +168,24 @@ function renderResume() {
 }
 
 // ==========================
-// RENDER HELPERS
+// RENDER HELPERS (Dates Right Side Fix)
 // ==========================
 function renderEducation() {
     let html = `<div class="resume-section"><div class="resume-title">Education</div>`;
     document.querySelectorAll(".education-entry").forEach(e => {
-        const i = e.querySelector(".institute")?.value, q = e.querySelector(".qualification")?.value, p = e.querySelector(".passingDate")?.value;
-        if(i || q) html += `<div class="entry"><strong>${i}</strong><br>${q} ${p ? '| ' + formatMonth(p) : ''}</div>`;
+        const i = e.querySelector(".institute")?.value;
+        const q = e.querySelector(".qualification")?.value;
+        const p = e.querySelector(".passingDate")?.value;
+        if(i || q) {
+            html += `
+            <div class="entry">
+                <div class="entry-header">
+                    <div class="entry-title">${i}</div>
+                    <div class="entry-date">${p ? formatMonth(p) : ''}</div>
+                </div>
+                <div class="entry-subtitle">${q}</div>
+            </div>`;
+        }
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
@@ -182,8 +193,27 @@ function renderEducation() {
 function renderExperience() {
     let html = `<div class="resume-section"><div class="resume-title">Experience</div>`;
     document.querySelectorAll(".experience-entry").forEach(e => {
-        const c = e.querySelector(".company")?.value, j = e.querySelector(".jobTitle")?.value, s = e.querySelector(".startDate")?.value, en = e.querySelector(".endDate")?.value, pr = e.querySelector(".presentCheck")?.checked, pts = e.querySelector(".experiencePoints")?.value;
-        if(c || j) html += `<div class="entry"><strong>${c}</strong> - ${j}<br>${formatMonth(s)} - ${pr ? "Present" : formatMonth(en)}<ul>${pts.split("\n").filter(p=>p.trim()).map(p => `<li>${p}</li>`).join("")}</ul></div>`;
+        const c = e.querySelector(".company")?.value;
+        const j = e.querySelector(".jobTitle")?.value;
+        const s = e.querySelector(".startDate")?.value;
+        const en = e.querySelector(".endDate")?.value;
+        const pr = e.querySelector(".presentCheck")?.checked;
+        const pts = e.querySelector(".experiencePoints")?.value;
+        
+        const dateStr = `${s ? formatMonth(s) : ''} - ${pr ? "Present" : formatMonth(en)}`;
+        const finalDate = dateStr !== " - " ? dateStr : '';
+
+        if(c || j) {
+            html += `
+            <div class="entry">
+                <div class="entry-header">
+                    <div class="entry-title">${c}</div>
+                    <div class="entry-date">${finalDate}</div>
+                </div>
+                <div class="entry-subtitle">${j}</div>
+                <ul>${pts.split("\n").filter(p=>p.trim()).map(p => `<li>${p}</li>`).join("")}</ul>
+            </div>`;
+        }
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
@@ -216,13 +246,18 @@ function renderCertificates(){
     let html = `<div class="resume-section"><div class="resume-title">Certificates</div>`;
     document.querySelectorAll(".certificate-entry").forEach(e=>{
         const n = e.querySelector(".certName")?.value, d = e.querySelector(".certDetails")?.value;
-        if(n) html += `<div class="entry"><strong>${n}</strong><br>${d}</div>`;
+        if(n) html += `<div class="entry">
+            <div class="entry-header">
+                <div class="entry-title">${n}</div>
+                <div class="entry-date">${d}</div>
+            </div>
+        </div>`;
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
 
 // ==========================
-// PDF DOWNLOAD
+// PDF DOWNLOAD (Mobile Blank Fix with windowWidth)
 // ==========================
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
     let userName = fullName.value.trim() || "Resume";
@@ -230,9 +265,11 @@ document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const resume = document.getElementById("resumePreview");
     
     html2pdf().set({ 
-        margin: 10, 
+        margin: [10, 0, 10, 0], 
         filename: fileName, 
-        jsPDF: { format: 'a4' } 
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, windowWidth: 800 }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
     }).from(resume).save();
 });
 
