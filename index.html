@@ -1,110 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AarK Resume Builder - Create Professional Resumes Free</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AarK Resume Builder - Professional Resume Maker</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-<div class="container">
-    <div class="editor-panel">
-        <h1>AarK Resume Builder</h1>
-        <div class="section-card fixed-section">
-            <h2>Profile Photo</h2>
-            <input type="file" id="photoInput" accept="image/*">
-        </div>
-        <div class="section-card fixed-section">
-            <h2>Personal Information</h2>
-            <input type="text" id="fullName" placeholder="Full Name">
-            <input type="email" id="email" placeholder="Email">
-            <input type="text" id="phone" placeholder="Phone Number">
-            <input type="text" id="address" placeholder="Address">
-        </div>
-        <div class="section-card fixed-section">
-            <h2>Professional Summary</h2>
-            <textarea id="summary" placeholder="Write your professional summary here"></textarea>
-        </div>
-        <!-- EDUCATION -->
-        <div class="section-card movable-section" id="educationSection">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-graduation-cap"></i> Education</h2>
-                <div class="controls">
-                    <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
-                    <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
-                    <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
-                    <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
+
+    <div class="container">
+        
+        <div class="editor-panel">
+            <h1>AarK Resume Builder</h1>
+
+            <div class="section-card fixed-section">
+                <h2>Profile Photo</h2>
+                <input type="file" id="photoInput" accept="image/*">
             </div>
-            <div id="educationContainer"></div>
-            <button id="addEducationBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Add Education</button>
-        </div>
-        <!-- EXPERIENCE -->
-        <div class="section-card movable-section" id="experienceSection">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-briefcase"></i> Experience</h2>
-                <div class="controls">
-                    <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
-                    <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
-                    <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
-                    <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
+
+            <div class="section-card fixed-section">
+                <h2>Personal Information</h2>
+                <input type="text" id="fullName" placeholder="Full Name">
+                <input type="email" id="email" placeholder="Email">
+                <input type="text" id="phone" placeholder="Phone Number">
+                <input type="text" id="address" placeholder="Address">
             </div>
-            <div id="experienceContainer"></div>
-            <button id="addExperienceBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Add Experience</button>
-        </div>
-        <!-- PROJECTS -->
-        <div class="section-card movable-section" id="projectsSection">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-folder-open"></i> Projects</h2>
-                <div class="controls">
-                    <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
-                    <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
-                    <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
-                    <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
+
+            <div class="section-card fixed-section">
+                <h2>Professional Summary</h2>
+                <textarea id="summary" placeholder="Write your professional summary here"></textarea>
             </div>
-            <div id="projectContainer"></div>
-            <button id="addProjectBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Add Project</button>
-        </div>
-        <!-- SKILLS -->
-        <div class="section-card movable-section" id="skillsSection">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-code"></i> Skills</h2>
-                <div class="controls">
-                    <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
-                    <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
-                    <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
-                    <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+
+            <div class="section-card movable-section" id="educationSection">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-graduation-cap"></i> Education</h2>
+                    <div class="controls">
+                        <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
+                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
                 </div>
+                <div id="educationContainer"></div>
+                <button id="addEducationBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Add Education</button>
             </div>
-            <textarea id="skillsInput" placeholder="Enter one skill per line"></textarea>
-        </div>
-        <!-- LANGUAGES -->
-        <div class="section-card movable-section" id="languagesSection">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-language"></i> Languages</h2>
-                <div class="controls">
-                    <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
-                    <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
-                    <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
-                    <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+
+            <div class="section-card movable-section" id="experienceSection">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-briefcase"></i> Experience</h2>
+                    <div class="controls">
+                        <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
+                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
                 </div>
+                <div id="experienceContainer"></div>
+                <button id="addExperienceBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Add Experience</button>
             </div>
-            <textarea id="languagesInput" placeholder="Enter one language per line"></textarea>
+
+            <div class="section-card movable-section" id="projectsSection">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-folder-open"></i> Projects</h2>
+                    <div class="controls">
+                        <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
+                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+                <div id="projectContainer"></div>
+                <button id="addProjectBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Add Project</button>
+            </div>
+
+            <div class="section-card movable-section" id="skillsSection">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-code"></i> Skills</h2>
+                    <div class="controls">
+                        <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
+                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+                <textarea id="skillsInput" placeholder="Enter one skill per line"></textarea>
+            </div>
+
+            <div class="section-card movable-section" id="languagesSection">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-language"></i> Languages</h2>
+                    <div class="controls">
+                        <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
+                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+                <textarea id="languagesInput" placeholder="Enter one language per line"></textarea>
+            </div>
+
+            <div class="section-card movable-section" id="registrationSection">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-id-card"></i> Licenses & Registrations <span style="font-size: 13px; font-weight: normal; color: #ccc;">(Optional)</span></h2>
+                    <div class="controls">
+                        <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
+                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+                <textarea id="registrationInput" placeholder="Enter registration detail (Optional - e.g., Medical Council Reg No: 12345)"></textarea>
+            </div>
+
+            <div class="section-card movable-section" id="certificatesSection">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-certificate"></i> Certificates</h2>
+                    <div class="controls">
+                        <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
+                        <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+                <div id="certificateContainer"></div>
+                <button id="addCertificateBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Add Certificate</button>
+            </div>
+
+            <div class="font-box">
+                <h2>Font Style</h2>
+                <select id="fontSelect">
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="Arial, sans-serif">Arial</option>
+                    <option value="'Times New Roman', serif">Times New Roman</option>
+                    <option value="'Georgia', serif">Georgia</option>
+                </select>
+            </div>
+
+            <button id="downloadBtn" class="download-btn"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+
         </div>
-        <!-- REGISTRATIONS -->
-        <div class="section-card movable-section" id="registrationSection">
-            <div class="section-header">
-                <h2>
-                    <i class="fa-solid fa-id-card"></i>
-                    Licenses & Registrations <span style="font-size: 14px; font-weight: normal; color: #888;">(Optional)</span>
-                </h2>
-                <div class="controls">
-                    <button class="icon-btn up-btn"><i class="fa-solid fa-arrow-up"></i></button>
-                    <button class="icon-btn down-btn"><i class="fa-solid fa-arrow-down"></i></button>
+
+        <div class="preview-panel">
+            <div id="resumePreview">
+                <div class="resume-header">
+                    <div class="resume-info">
+                        <h1 id="previewName">Your Name</h1>
+                        <p id="previewContact">Email | Phone | Address</p>
+                        <div id="previewSummary"></div>
+                    </div>
+                    <img id="previewPhoto" src="" alt="Profile Photo">
+                </div>
+                
+                <div id="resumeSections"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <template id="educationTemplate">
+        <div class="entry-card education-entry">
+            <input type="text" class="institute" placeholder="Institute Name">
+            <input type="text" class="qualification" placeholder="Qualification / Degree (e.g. B.Tech)">
+            <label style="margin-top: 10px; display: block; color: #ccc;">Passing Date</label>
+            <input type="month" class="passingDate">
+            <button class="remove-entry">Remove</button>
+        </div>
+    </template>
+
+    <template id="experienceTemplate">
+        <div class="entry-card experience-entry">
+            <input type="text" class="company" placeholder="Company Name">
+            <input type="text" class="jobTitle" placeholder="Job Title">
+            <label style="margin-top: 10px; display: block; color: #ccc;">Start Date</label>
+            <input type="month" class="startDate">
+            <label style="margin-top: 10px; display: block; color: #ccc;">End Date</label>
+            <input type="month" class="endDate">
+            <label class="checkbox-label" style="color: #ccc;">
+                <input type="checkbox" class="presentCheck"> Currently Working Here
+            </label>
+            <textarea class="experiencePoints" placeholder="Write points here (One per line)"></textarea>
+            <button class="remove-entry">Remove</button>
+        </div>
+    </template>
+
+    <template id="projectTemplate">
+        <div class="entry-card project-entry">
+            <input type="text" class="projectName" placeholder="Project Name">
+            <textarea class="projectPoints" placeholder="Write project details (One per line)"></textarea>
+            <button class="remove-entry">Remove</button>
+        </div>
+    </template>
+
+    <template id="certificateTemplate">
+        <div class="entry-card certificate-entry">
+            <input type="text" class="certName" placeholder="Certificate Title">
+            <input type="text" class="certDetails" placeholder="Details or Year (e.g. 2025)">
+            <button class="remove-entry">Remove</button>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>
                     <button class="icon-btn hide-btn"><i class="fa-regular fa-eye"></i></button>
                     <button class="icon-btn delete-btn"><i class="fa-regular fa-trash-can"></i></button>
                 </div>
