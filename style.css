@@ -208,7 +208,7 @@ input[type="month"] {
     margin: 0 auto !important;
     box-sizing: border-box !important;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    border: 3px solid #38b6ff !important;
+    border: none !important;
 }
 
 /* Resume Header */
