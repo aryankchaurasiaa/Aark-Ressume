@@ -52,33 +52,51 @@ photoInput.addEventListener("change", function(){
 
 // ADD SECTION ENTRIES
 document.getElementById("addEducationBtn").addEventListener("click", () => {
-    const template = document.getElementById("educationTemplate");
-    educationContainer.appendChild(template.content.cloneNode(true));
+    educationContainer.appendChild(document.getElementById("educationTemplate").content.cloneNode(true));
     renderResume();
 });
 document.getElementById("addExperienceBtn").addEventListener("click", () => {
-    const template = document.getElementById("experienceTemplate");
-    experienceContainer.appendChild(template.content.cloneNode(true));
+    experienceContainer.appendChild(document.getElementById("experienceTemplate").content.cloneNode(true));
     renderResume();
 });
 document.getElementById("addProjectBtn").addEventListener("click", () => {
-    const template = document.getElementById("projectTemplate");
-    projectContainer.appendChild(template.content.cloneNode(true));
+    projectContainer.appendChild(document.getElementById("projectTemplate").content.cloneNode(true));
     renderResume();
 });
 const addCertBtn = document.getElementById("addCertificateBtn");
 if(addCertBtn) {
     addCertBtn.addEventListener("click", () => {
-        const template = document.getElementById("certificateTemplate");
-        certificateContainer.appendChild(template.content.cloneNode(true));
+        certificateContainer.appendChild(document.getElementById("certificateTemplate").content.cloneNode(true));
         renderResume();
     });
 }
 
-// REMOVE ENTRY
+// BUTTON ACTIONS (DELETE, MOVE, HIDE)
 document.addEventListener("click", (e) => {
-    if(e.target.closest(".remove-entry")){
-        e.target.parentElement.remove();
+    // Remove Entry
+    if(e.target.closest(".remove-entry")) { e.target.parentElement.remove(); renderResume(); }
+    
+    // Delete Section
+    if(e.target.closest(".delete-btn")) {
+        if(confirm("Are you sure?")) e.target.closest(".section-card").style.display = "none";
+    }
+    
+    // Move Up/Down
+    if(e.target.closest(".up-btn")) {
+        const section = e.target.closest(".movable-section");
+        if(section.previousElementSibling) section.parentNode.insertBefore(section, section.previousElementSibling);
+        renderResume();
+    }
+    if(e.target.closest(".down-btn")) {
+        const section = e.target.closest(".movable-section");
+        if(section.nextElementSibling) section.parentNode.insertBefore(section.nextElementSibling, section);
+        renderResume();
+    }
+    
+    // Hide Section
+    if(e.target.closest(".hide-btn")) {
+        const section = e.target.closest(".section-card");
+        section.dataset.hidden = section.dataset.hidden === "true" ? "false" : "true";
         renderResume();
     }
 });
@@ -97,7 +115,7 @@ if(addCertBtn) addCertBtn.click();
 function renderResume() {
     resumeSections.innerHTML = "";
     document.querySelectorAll(".movable-section").forEach(section => {
-        if (section.dataset.hidden === "true") return;
+        if (section.style.display === "none" || section.dataset.hidden === "true") return;
         switch (section.id) {
             case "educationSection": renderEducation(); break;
             case "experienceSection": renderExperience(); break;
@@ -110,7 +128,7 @@ function renderResume() {
     });
 }
 
-// RENDER HELPERS
+// RENDER HELPERS (Same as before)
 function renderEducation() {
     let html = `<div class="resume-section"><div class="resume-title">Education</div>`;
     document.querySelectorAll(".education-entry").forEach(e => {
@@ -120,7 +138,6 @@ function renderEducation() {
     });
     if (html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
-
 function renderExperience() {
     let html = `<div class="resume-section"><div class="resume-title">Experience</div>`;
     document.querySelectorAll(".experience-entry").forEach(e => {
@@ -130,7 +147,6 @@ function renderExperience() {
     });
     if (html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
-
 function renderProjects(){
     let html = `<div class="resume-section"><div class="resume-title">Projects</div>`;
     document.querySelectorAll(".project-entry").forEach(e=>{
@@ -140,25 +156,21 @@ function renderProjects(){
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
-
 function renderSkills(){
     const s = skillsInput.value.split("\n").filter(i => i.trim());
     if(!s.length) return;
     resumeSections.innerHTML += `<div class="resume-section"><div class="resume-title">Skills</div><ul class="skills-list">${s.map(i => `<li>${i}</li>`).join("")}</ul></div>`;
 }
-
 function renderLanguages(){
     const l = languagesInput.value.split("\n").filter(i => i.trim());
     if(!l.length) return;
     resumeSections.innerHTML += `<div class="resume-section"><div class="resume-title">Languages</div><ul class="skills-list">${l.map(i => `<li>${i}</li>`).join("")}</ul></div>`;
 }
-
 function renderRegistration(){
     const r = registrationInput.value.split("\n").filter(i => i.trim());
     if(!r.length) return;
     resumeSections.innerHTML += `<div class="resume-section"><div class="resume-title">Licenses & Registrations</div><ul style="padding-left: 22px;">${r.map(i => `<li style="margin-bottom: 5px;">${i}</li>`).join("")}</ul></div>`;
 }
-
 function renderCertificates(){
     let html = `<div class="resume-section"><div class="resume-title">Certificates</div>`;
     document.querySelectorAll(".certificate-entry").forEach(e=>{
@@ -168,14 +180,6 @@ function renderCertificates(){
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
-
-// TOGGLE VISIBILITY
-document.addEventListener("click", (e) => {
-    if(!e.target.closest(".hide-btn")) return;
-    const section = e.target.closest(".section-card");
-    section.dataset.hidden = section.dataset.hidden === "true" ? "false" : "true";
-    renderResume();
-});
 
 // PDF DOWNLOAD
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
