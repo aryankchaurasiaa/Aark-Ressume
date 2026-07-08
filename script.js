@@ -578,11 +578,12 @@ if (downloadBtn) {
         // 1. Mobile Blank Bug Fix:
         window.scrollTo(0, 0); 
 
-        // 2. Calculate Resume exact height
+        // 2. Calculate Resume exact height & width dynamically
         const currentHeight = resume.scrollHeight;
+        const currentWidth = resume.scrollWidth;
 
         const opt = {
-            margin: 0,
+            margin: [20, 20, 20, 30], // [Top, Right, Bottom, Left] -> Left me 30px extra space
             filename: fileName,
             image: { type: "jpeg", quality: 0.98 },
             html2canvas: { 
@@ -591,12 +592,11 @@ if (downloadBtn) {
                 letterRendering: true,
                 scrollY: 0,      
                 scrollX: 0,
-                windowWidth: 800, 
-                windowHeight: currentHeight 
+                windowWidth: currentWidth // 800 hatakar actual width laga di
             },
             jsPDF: { 
                 unit: "px", 
-                format: [800, currentHeight], 
+                format: [currentWidth + 50, currentHeight + 40], // Canvas + Margin ki jagah
                 orientation: "portrait" 
             }
         };
