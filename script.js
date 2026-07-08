@@ -11,17 +11,20 @@ const previewContact = document.getElementById("previewContact");
 const previewSummary = document.getElementById("previewSummary");
 const photoInput = document.getElementById("photoInput");
 const previewPhoto = document.getElementById("previewPhoto");
+
 const educationContainer = document.getElementById("educationContainer");
 const experienceContainer = document.getElementById("experienceContainer");
 const projectContainer = document.getElementById("projectContainer");
 const certificateContainer = document.getElementById("certificateContainer");
+
 const skillsInput = document.getElementById("skillsInput");
 const languagesInput = document.getElementById("languagesInput");
 const registrationInput = document.getElementById("registrationInput");
 const resumeSections = document.getElementById("resumeSections");
+const fontSelect = document.getElementById("fontSelect");
 
 // ==========================
-// UTILS
+// DATE FORMATTER
 // ==========================
 function formatMonth(dateString){
     if(!dateString) return "";
@@ -31,23 +34,77 @@ function formatMonth(dateString){
 }
 
 // ==========================
-// GLOBAL EVENT LISTENERS
+// BASIC INFO & FONT UPDATE
 // ==========================
-fullName.addEventListener("input", () => previewName.textContent = fullName.value || "Your Name");
-document.addEventListener("input", renderResume);
-document.addEventListener("change", renderResume);
+function updateBasicInfo(){
+    previewName.textContent = fullName.value || "Your Name";
+    previewContact.textContent = `${email.value || "Email"} | ${phone.value || "Phone"} | ${address.value || "Address"}`;
+    previewSummary.textContent = summary.value || "";
+}
+[fullName, email, phone, address, summary].forEach(el => el.addEventListener("input", updateBasicInfo));
+
+if(fontSelect) {
+    fontSelect.addEventListener("change", function() {
+        document.getElementById("resumePreview").style.fontFamily = this.value;
+    });
+}
+
+// ==========================
+// PROFILE PHOTO HANDLER
+// ==========================
+photoInput.addEventListener("change", function(){
+    const file = this.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        previewPhoto.src = e.target.result;
+        previewPhoto.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+});
+
+// ==========================
+// ADD SECTION ENTRIES (Form kholna)
+// ==========================
+document.getElementById("addEducationBtn").addEventListener("click", () => {
+    educationContainer.appendChild(document.getElementById("educationTemplate").content.cloneNode(true));
+    renderResume();
+});
+
+document.getElementById("addExperienceBtn").addEventListener("click", () => {
+    experienceContainer.appendChild(document.getElementById("experienceTemplate").content.cloneNode(true));
+    renderResume();
+});
+
+document.getElementById("addProjectBtn").addEventListener("click", () => {
+    projectContainer.appendChild(document.getElementById("projectTemplate").content.cloneNode(true));
+    renderResume();
+});
+
+const addCertBtn = document.getElementById("addCertificateBtn");
+if(addCertBtn) {
+    addCertBtn.addEventListener("click", () => {
+        certificateContainer.appendChild(document.getElementById("certificateTemplate").content.cloneNode(true));
+        renderResume();
+    });
+}
 
 // ==========================
 // BUTTON LOGIC (DELETE, MOVE, HIDE)
 // ==========================
 document.addEventListener("click", (e) => {
     // 1. Remove Individual Entry
-    if(e.target.closest(".remove-entry")) { e.target.parentElement.remove(); renderResume(); }
+    if(e.target.closest(".remove-entry")) { 
+        e.target.parentElement.remove(); 
+        renderResume(); 
+    }
     
     // 2. Delete Entire Section
     if(e.target.closest(".delete-btn")) {
-        if(confirm("Are you sure?")) e.target.closest(".section-card").style.display = "none";
-        renderResume();
+        if(confirm("Are you sure you want to delete this section?")) {
+            e.target.closest(".section-card").style.display = "none";
+            renderResume();
+        }
     }
     
     // 3. Hide/Show (Minimize Logic)
@@ -90,10 +147,12 @@ document.addEventListener("click", (e) => {
 // ==========================
 // RENDER ENGINE
 // ==========================
+document.addEventListener("input", renderResume);
+document.addEventListener("change", renderResume);
+
 function renderResume() {
     resumeSections.innerHTML = "";
     document.querySelectorAll(".movable-section").forEach(s => {
-        // Agar section hidden hai (minimized), toh ise PDF/Preview me na dikhaye
         if (s.style.display === "none" || s.classList.contains("section-hidden")) return; 
         
         switch (s.id) {
@@ -108,7 +167,9 @@ function renderResume() {
     });
 }
 
+// ==========================
 // RENDER HELPERS
+// ==========================
 function renderEducation() {
     let html = `<div class="resume-section"><div class="resume-title">Education</div>`;
     document.querySelectorAll(".education-entry").forEach(e => {
@@ -160,10 +221,25 @@ function renderCertificates(){
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
 
+// ==========================
 // PDF DOWNLOAD
+// ==========================
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
-    html2pdf().set({ margin: 10, filename: 'Resume.pdf' }).from(document.getElementById("resumePreview")).save();
+    let userName = fullName.value.trim() || "Resume";
+    const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
+    const resume = document.getElementById("resumePreview");
+    
+    html2pdf().set({ 
+        margin: 10, 
+        filename: fileName, 
+        jsPDF: { format: 'a4' } 
+    }).from(resume).save();
 });
 
-// INITIALIZE
-window.onload = () => { renderResume(); };
+// ==========================
+// INITIALIZATION
+// ==========================
+window.onload = () => { 
+    updateBasicInfo();
+    renderResume(); 
+};
