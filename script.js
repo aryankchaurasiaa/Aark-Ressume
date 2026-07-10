@@ -218,7 +218,7 @@ function renderCertificates(){
 }
 
 // ==========================
-// PDF DOWNLOAD (VIEWPORT HACK - 100% SUCCESS RATE)
+// PDF DOWNLOAD (BULLETPROOF CLONE METHOD)
 // ==========================
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const btn = document.getElementById("downloadBtn");
@@ -231,43 +231,50 @@ document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
     const resume = document.getElementById("resumePreview");
 
-    // 1. Original Viewport save karo
-    let viewportMeta = document.querySelector('meta[name="viewport"]');
-    let originalViewport = viewportMeta ? viewportMeta.content : "";
-    
-    // 2. Mobile ko temporarily Desktop me badlo (800px width force kardo)
-    if (viewportMeta) {
-        viewportMeta.content = "width=800, user-scalable=yes";
-    }
+    // 1. Ek temporary container banao jo ekdum 0,0 position par ho
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "absolute";
+    wrapper.style.top = "0";
+    wrapper.style.left = "0";
+    wrapper.style.width = "800px";
+    wrapper.style.background = "white";
+    wrapper.style.zIndex = "-9999"; // Background me hide karne ke liye
 
-    // Scroll ko top par set karo taaki upar se cut na ho
-    window.scrollTo(0, 0);
+    // 2. Resume ki copy (clone) banao aur center-margin hata do
+    const clone = resume.cloneNode(true);
+    clone.style.setProperty("margin", "0", "important"); // Sabse important line (Left cut roke gaa)
+    clone.style.setProperty("width", "800px", "important");
+    clone.style.setProperty("max-width", "800px", "important");
+    clone.style.setProperty("box-shadow", "none", "important");
 
-    // 3. Browser ko 500ms (aadha second) ka time do screen resize karne ke liye
-    setTimeout(() => {
-        const opt = {
-            margin:       [10, 0, 10, 0], 
-            filename:     fileName, 
-            image:        { type: 'jpeg', quality: 1.0 },
-            html2canvas:  { 
-                scale: 2, 
-                useCORS: true 
-            }, 
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-        };
+    // 3. Clone ko page me add karo
+    wrapper.appendChild(clone);
+    document.body.appendChild(wrapper);
 
-        html2pdf().set(opt).from(resume).save().then(() => {
-            // 4. Download hone ke turant baad mobile ko wapas normal kar do
-            if (viewportMeta) viewportMeta.content = originalViewport;
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }).catch((err) => {
-            // Agar error aaye tab bhi wapas normal kar do
-            if (viewportMeta) viewportMeta.content = originalViewport;
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        });
-    }, 500); 
+    const opt = {
+        margin:       [10, 0, 10, 0], 
+        filename:     fileName, 
+        image:        { type: 'jpeg', quality: 1.0 },
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            scrollX: 0, 
+            scrollY: 0, 
+            windowWidth: 800 
+        }, 
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+    };
+
+    // 4. PDF generate karo aur clone ko delete kar do
+    html2pdf().set(opt).from(clone).save().then(() => {
+        document.body.removeChild(wrapper);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }).catch((err) => {
+        document.body.removeChild(wrapper);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
 });
 
 // ==========================
