@@ -218,13 +218,13 @@ function renderCertificates(){
 }
 
 // ==========================
-// PDF DOWNLOAD (100% Mobile Fix without Clone)
+// PDF DOWNLOAD (Final Cut-Off Fix)
 // ==========================
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const btn = document.getElementById("downloadBtn");
     const originalText = btn.innerHTML;
     
-    // Button ko loading state me dalo
+    // Loading State
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Downloading...`;
     btn.disabled = true;
 
@@ -232,31 +232,27 @@ document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
     const resume = document.getElementById("resumePreview");
 
-    // CSS temporarily modify karo taaki PDF desktop size me aaye, blank na aaye
-    const originalWidth = resume.style.width;
-    const originalMaxWidth = resume.style.maxWidth;
+    // Purani CSS save ki taaki baad me wapas aa sake
+    const originalCss = resume.style.cssText;
     
-    resume.style.width = "800px";
-    resume.style.maxWidth = "800px";
+    // Resume ko strictly Top-Left corner par chipka diya aur 800px kar diya (Taaki left side cut na ho)
+    resume.style.cssText = "width: 800px !important; max-width: 800px !important; position: absolute !important; top: 0 !important; left: 0 !important; margin: 0 !important; box-sizing: border-box !important;";
 
-    // ScrollY 0 karne se blank cut off issue theek ho jata hai mobile pe
     const opt = {
         margin:       10, 
         filename:     fileName, 
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowWidth: 800 }, 
+        html2canvas:  { scale: 2, useCORS: true, scrollY: 0, scrollX: 0, windowWidth: 800 }, 
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
     };
 
     html2pdf().set(opt).from(resume).save().then(() => {
-        // PDF download hone ke baad normal screen wapas layo
-        resume.style.width = originalWidth;
-        resume.style.maxWidth = originalMaxWidth;
+        // Download hone ke baad wapas normal kardo
+        resume.style.cssText = originalCss;
         btn.innerHTML = originalText;
         btn.disabled = false;
     }).catch((err) => {
-        resume.style.width = originalWidth;
-        resume.style.maxWidth = originalMaxWidth;
+        resume.style.cssText = originalCss;
         btn.innerHTML = originalText;
         btn.disabled = false;
     });
