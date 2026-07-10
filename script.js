@@ -93,13 +93,11 @@ if(addCertBtn) {
 // BUTTON LOGIC (DELETE, MOVE, HIDE)
 // ==========================
 document.addEventListener("click", (e) => {
-    // 1. Remove Individual Entry
     if(e.target.closest(".remove-entry")) { 
         e.target.parentElement.remove(); 
         renderResume(); 
     }
     
-    // 2. Delete Entire Section
     if(e.target.closest(".delete-btn")) {
         if(confirm("Are you sure you want to delete this section?")) {
             e.target.closest(".section-card").style.display = "none";
@@ -107,7 +105,6 @@ document.addEventListener("click", (e) => {
         }
     }
     
-    // 3. Hide/Show (Minimize Logic)
     if(e.target.closest(".hide-btn")) {
         const btn = e.target.closest(".hide-btn");
         const section = btn.closest(".section-card");
@@ -125,7 +122,6 @@ document.addEventListener("click", (e) => {
         renderResume();
     }
     
-    // 4. Move Up
     if(e.target.closest(".up-btn")) {
         const s = e.target.closest(".movable-section");
         if(s.previousElementSibling && s.previousElementSibling.classList.contains("movable-section")) {
@@ -134,7 +130,6 @@ document.addEventListener("click", (e) => {
         }
     }
     
-    // 5. Move Down
     if(e.target.closest(".down-btn")) {
         const s = e.target.closest(".movable-section");
         if(s.nextElementSibling) {
@@ -168,24 +163,13 @@ function renderResume() {
 }
 
 // ==========================
-// RENDER HELPERS (Dates Right Side Fix)
+// RENDER HELPERS
 // ==========================
 function renderEducation() {
     let html = `<div class="resume-section"><div class="resume-title">Education</div>`;
     document.querySelectorAll(".education-entry").forEach(e => {
-        const i = e.querySelector(".institute")?.value;
-        const q = e.querySelector(".qualification")?.value;
-        const p = e.querySelector(".passingDate")?.value;
-        if(i || q) {
-            html += `
-            <div class="entry">
-                <div class="entry-header">
-                    <div class="entry-title">${i}</div>
-                    <div class="entry-date">${p ? formatMonth(p) : ''}</div>
-                </div>
-                <div class="entry-subtitle">${q}</div>
-            </div>`;
-        }
+        const i = e.querySelector(".institute")?.value, q = e.querySelector(".qualification")?.value, p = e.querySelector(".passingDate")?.value;
+        if(i || q) html += `<div class="entry"><div class="entry-header"><div class="entry-title">${i}</div><div class="entry-date">${p ? formatMonth(p) : ''}</div></div><div class="entry-subtitle">${q}</div></div>`;
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
@@ -193,27 +177,9 @@ function renderEducation() {
 function renderExperience() {
     let html = `<div class="resume-section"><div class="resume-title">Experience</div>`;
     document.querySelectorAll(".experience-entry").forEach(e => {
-        const c = e.querySelector(".company")?.value;
-        const j = e.querySelector(".jobTitle")?.value;
-        const s = e.querySelector(".startDate")?.value;
-        const en = e.querySelector(".endDate")?.value;
-        const pr = e.querySelector(".presentCheck")?.checked;
-        const pts = e.querySelector(".experiencePoints")?.value;
-        
-        const dateStr = `${s ? formatMonth(s) : ''} - ${pr ? "Present" : formatMonth(en)}`;
-        const finalDate = dateStr !== " - " ? dateStr : '';
-
-        if(c || j) {
-            html += `
-            <div class="entry">
-                <div class="entry-header">
-                    <div class="entry-title">${c}</div>
-                    <div class="entry-date">${finalDate}</div>
-                </div>
-                <div class="entry-subtitle">${j}</div>
-                <ul>${pts.split("\n").filter(p=>p.trim()).map(p => `<li>${p}</li>`).join("")}</ul>
-            </div>`;
-        }
+        const c = e.querySelector(".company")?.value, j = e.querySelector(".jobTitle")?.value, s = e.querySelector(".startDate")?.value, en = e.querySelector(".endDate")?.value, pr = e.querySelector(".presentCheck")?.checked, pts = e.querySelector(".experiencePoints")?.value;
+        const finalDate = (s || pr || en) ? `${s ? formatMonth(s) : ''} - ${pr ? "Present" : formatMonth(en)}` : '';
+        if(c || j) html += `<div class="entry"><div class="entry-header"><div class="entry-title">${c}</div><div class="entry-date">${finalDate !== " - " ? finalDate : ''}</div></div><div class="entry-subtitle">${j}</div><ul>${pts.split("\n").filter(p=>p.trim()).map(p => `<li>${p}</li>`).join("")}</ul></div>`;
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
@@ -222,7 +188,7 @@ function renderProjects(){
     let html = `<div class="resume-section"><div class="resume-title">Projects</div>`;
     document.querySelectorAll(".project-entry").forEach(e=>{
         const p = e.querySelector(".projectName")?.value, pts = e.querySelector(".projectPoints")?.value;
-        if(p) html += `<div class="entry"><strong>${p}</strong><ul>${pts.split("\n").filter(pt=>pt.trim()).map(pt => `<li>${pt}</li>`).join("")}</ul></div>`;
+        if(p) html += `<div class="entry"><div class="entry-title">${p}</div><ul>${pts.split("\n").filter(pt=>pt.trim()).map(pt => `<li>${pt}</li>`).join("")}</ul></div>`;
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
@@ -246,31 +212,54 @@ function renderCertificates(){
     let html = `<div class="resume-section"><div class="resume-title">Certificates</div>`;
     document.querySelectorAll(".certificate-entry").forEach(e=>{
         const n = e.querySelector(".certName")?.value, d = e.querySelector(".certDetails")?.value;
-        if(n) html += `<div class="entry">
-            <div class="entry-header">
-                <div class="entry-title">${n}</div>
-                <div class="entry-date">${d}</div>
-            </div>
-        </div>`;
+        if(n) html += `<div class="entry"><div class="entry-header"><div class="entry-title">${n}</div><div class="entry-date">${d}</div></div></div>`;
     });
     if(html.includes("class=\"entry\"")) resumeSections.innerHTML += html + "</div>";
 }
 
 // ==========================
-// PDF DOWNLOAD (Mobile Blank Fix with windowWidth)
+// PDF DOWNLOAD (100% Mobile Fix without Clone)
 // ==========================
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
+    const btn = document.getElementById("downloadBtn");
+    const originalText = btn.innerHTML;
+    
+    // Button ko loading state me dalo
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Downloading...`;
+    btn.disabled = true;
+
     let userName = fullName.value.trim() || "Resume";
     const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
     const resume = document.getElementById("resumePreview");
+
+    // CSS temporarily modify karo taaki PDF desktop size me aaye, blank na aaye
+    const originalWidth = resume.style.width;
+    const originalMaxWidth = resume.style.maxWidth;
     
-    html2pdf().set({ 
-        margin: [10, 0, 10, 0], 
-        filename: fileName, 
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, windowWidth: 800 }, 
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-    }).from(resume).save();
+    resume.style.width = "800px";
+    resume.style.maxWidth = "800px";
+
+    // ScrollY 0 karne se blank cut off issue theek ho jata hai mobile pe
+    const opt = {
+        margin:       10, 
+        filename:     fileName, 
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowWidth: 800 }, 
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+    };
+
+    html2pdf().set(opt).from(resume).save().then(() => {
+        // PDF download hone ke baad normal screen wapas layo
+        resume.style.width = originalWidth;
+        resume.style.maxWidth = originalMaxWidth;
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }).catch((err) => {
+        resume.style.width = originalWidth;
+        resume.style.maxWidth = originalMaxWidth;
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
 });
 
 // ==========================
