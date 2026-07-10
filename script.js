@@ -163,7 +163,7 @@ function renderResume() {
 }
 
 // ==========================
-// RENDER HELPERS (Date Right Side Fix)
+// RENDER HELPERS
 // ==========================
 function renderEducation() {
     let html = `<div class="resume-section"><div class="resume-title">Education</div>`;
@@ -218,7 +218,7 @@ function renderCertificates(){
 }
 
 // ==========================
-// PDF DOWNLOAD (Mobile & Laptop Perfect Fit)
+// PDF DOWNLOAD (ULTIMATE MOBILE CUT-OFF FIX)
 // ==========================
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const btn = document.getElementById("downloadBtn");
@@ -231,27 +231,43 @@ document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
     const resume = document.getElementById("resumePreview");
 
-    const opt = {
-        margin:       [10, 8, 10, 8], 
-        filename:     fileName, 
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
-            scrollY: 0, 
-            scrollX: 0,
-            windowWidth: 1024 
-        }, 
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-    };
+    // TEMPORARY CSS INJECT: Mobile ka scroll dabba (overflow) khol do taaki kainchi na chale
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .preview-panel { overflow: visible !important; }
+        .container { overflow: visible !important; display: block !important; }
+        #resumePreview { margin: 0 !important; transform: none !important; left: 0 !important; }
+        body { overflow: visible !important; }
+    `;
+    document.head.appendChild(style);
 
-    html2pdf().set(opt).from(resume).save().then(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }).catch((err) => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
+    // Timeout taaki browser style ko pehle apply kar le
+    setTimeout(() => {
+        const opt = {
+            margin:       [10, 0, 10, 0], 
+            filename:     fileName, 
+            image:        { type: 'jpeg', quality: 1.0 },
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true, 
+                scrollY: 0,
+                scrollX: 0,
+                windowWidth: 800
+            }, 
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+        };
+
+        html2pdf().set(opt).from(resume).save().then(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            // PDF bante hi wapas purana style hata do
+            document.head.removeChild(style);
+        }).catch((err) => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            document.head.removeChild(style);
+        });
+    }, 150); // 150 miliseconds ka wait
 });
 
 // ==========================
@@ -261,4 +277,3 @@ window.onload = () => {
     updateBasicInfo();
     renderResume(); 
 };
-
