@@ -163,7 +163,7 @@ function renderResume() {
 }
 
 // ==========================
-// RENDER HELPERS
+// RENDER HELPERS (Date Right Side Fix)
 // ==========================
 function renderEducation() {
     let html = `<div class="resume-section"><div class="resume-title">Education</div>`;
@@ -218,13 +218,12 @@ function renderCertificates(){
 }
 
 // ==========================
-// PDF DOWNLOAD (Final Cut-Off Fix)
+// PDF DOWNLOAD (Mobile & Laptop Perfect Fit)
 // ==========================
 document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const btn = document.getElementById("downloadBtn");
     const originalText = btn.innerHTML;
     
-    // Loading State
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Downloading...`;
     btn.disabled = true;
 
@@ -232,27 +231,24 @@ document.getElementById("downloadBtn")?.addEventListener("click", () => {
     const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
     const resume = document.getElementById("resumePreview");
 
-    // Purani CSS save ki taaki baad me wapas aa sake
-    const originalCss = resume.style.cssText;
-    
-    // Resume ko strictly Top-Left corner par chipka diya aur 800px kar diya (Taaki left side cut na ho)
-    resume.style.cssText = "width: 800px !important; max-width: 800px !important; position: absolute !important; top: 0 !important; left: 0 !important; margin: 0 !important; box-sizing: border-box !important;";
-
     const opt = {
-        margin:       10, 
+        margin:       [10, 8, 10, 8], 
         filename:     fileName, 
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, scrollY: 0, scrollX: 0, windowWidth: 800 }, 
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            scrollY: 0, 
+            scrollX: 0,
+            windowWidth: 1024 
+        }, 
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
     };
 
     html2pdf().set(opt).from(resume).save().then(() => {
-        // Download hone ke baad wapas normal kardo
-        resume.style.cssText = originalCss;
         btn.innerHTML = originalText;
         btn.disabled = false;
     }).catch((err) => {
-        resume.style.cssText = originalCss;
         btn.innerHTML = originalText;
         btn.disabled = false;
     });
@@ -265,3 +261,4 @@ window.onload = () => {
     updateBasicInfo();
     renderResume(); 
 };
+
