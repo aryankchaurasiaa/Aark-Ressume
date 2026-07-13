@@ -218,63 +218,156 @@ function renderCertificates(){
 }
 
 // ==========================
-// PDF DOWNLOAD (BULLETPROOF CLONE METHOD)
+// PDF DOWNLOAD (NEW ENGINE)
 // ==========================
-document.getElementById("downloadBtn")?.addEventListener("click", () => {
+
+document.getElementById("downloadBtn")?.addEventListener("click", async () => {
+
     const btn = document.getElementById("downloadBtn");
     const originalText = btn.innerHTML;
-    
+
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Downloading...`;
     btn.disabled = true;
 
-    let userName = fullName.value.trim() || "Resume";
-    const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
-    const resume = document.getElementById("resumePreview");
+    try {
 
-    // 1. Ek temporary container banao jo ekdum 0,0 position par ho
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "absolute";
-    wrapper.style.top = "0";
-    wrapper.style.left = "0";
-    wrapper.style.width = "800px";
-    wrapper.style.background = "white";
-    wrapper.style.zIndex = "-9999"; // Background me hide karne ke liye
+        const resume = document.getElementById("resumePreview");
 
-    // 2. Resume ki copy (clone) banao aur center-margin hata do
-    const clone = resume.cloneNode(true);
-    clone.style.setProperty("margin", "0", "important"); // Sabse important line (Left cut roke gaa)
-    clone.style.setProperty("width", "800px", "important");
-    clone.style.setProperty("max-width", "800px", "important");
-    clone.style.setProperty("box-shadow", "none", "important");
+        let userName = fullName.value.trim() || "Resume";
+        const fileName = userName.replace(/\s+/g, "_") + "_AarK_Resume.pdf";
 
-    // 3. Clone ko page me add karo
-    wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
 
-    const opt = {
-        margin:       [10, 0, 10, 0], 
-        filename:     fileName, 
-        image:        { type: 'jpeg', quality: 1.0 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
-            scrollX: 0, 
-            scrollY: 0, 
-            windowWidth: 800 
-        }, 
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-    };
+        // Clone resume
+        const clone = resume.cloneNode(true);
 
-    // 4. PDF generate karo aur clone ko delete kar do
-    html2pdf().set(opt).from(clone).save().then(() => {
-        document.body.removeChild(wrapper);
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }).catch((err) => {
-        document.body.removeChild(wrapper);
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
+        clone.style.position = "absolute";
+        clone.style.left = "-10000px";
+        clone.style.top = "0";
+        clone.style.width = "794px";
+        clone.style.minHeight = "1123px";
+        clone.style.margin = "0";
+        clone.style.padding = "40px";
+        clone.style.background = "#ffffff";
+        clone.style.color = "#111";
+        clone.style.boxShadow = "none";
+        clone.style.overflow = "visible";
+
+
+        document.body.appendChild(clone);
+
+
+        // Wait for images/fonts
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+
+        const canvas = await html2canvas(clone, {
+
+            scale: 3,
+
+            useCORS: true,
+
+            allowTaint: true,
+
+            backgroundColor: "#ffffff",
+
+            scrollX: 0,
+
+            scrollY: 0,
+
+            width: clone.scrollWidth,
+
+            height: clone.scrollHeight,
+
+            windowWidth: clone.scrollWidth,
+
+            windowHeight: clone.scrollHeight
+
+        });
+
+
+        document.body.removeChild(clone);
+
+
+        const { jsPDF } = window.jspdf;
+
+
+        const pdf = new jsPDF(
+            "p",
+            "mm",
+            "a4"
+        );
+
+
+        const pageWidth = 210;
+
+        const pageHeight = 297;
+
+
+        const imgWidth = pageWidth;
+
+        const imgHeight =
+            (canvas.height * imgWidth) / canvas.width;
+
+
+        let heightLeft = imgHeight;
+
+        let position = 0;
+
+
+        const imgData = canvas.toDataURL(
+            "image/png",
+            1.0
+        );
+
+
+        pdf.addImage(
+            imgData,
+            "PNG",
+            0,
+            position,
+            imgWidth,
+            imgHeight
+        );
+
+
+        heightLeft -= pageHeight;
+
+
+        while(heightLeft > 0){
+
+            position = heightLeft - imgHeight;
+
+            pdf.addPage();
+
+            pdf.addImage(
+                imgData,
+                "PNG",
+                0,
+                position,
+                imgWidth,
+                imgHeight
+            );
+
+            heightLeft -= pageHeight;
+
+        }
+
+
+        pdf.save(fileName);
+
+
+    } catch(error){
+
+        console.error("PDF Error:", error);
+
+        alert("PDF generate nahi ho paya. Please try again.");
+
+    }
+
+
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+
 });
 
 // ==========================
